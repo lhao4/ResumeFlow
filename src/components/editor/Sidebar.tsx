@@ -56,7 +56,7 @@ function SortableItem({ section }: SortableItemProps) {
     transition,
   };
 
-  const isActive = activeSectionId === section.id;
+  const isActive = activeSectionId === (section.id as string | null);
 
   return (
     <div
@@ -142,7 +142,7 @@ export default function Sidebar() {
           <div 
             className={cn(
               "flex items-center gap-3 p-2 rounded-md border transition-all cursor-pointer",
-              activeSectionId === null ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-white hover:border-gray-300"
+              (activeSectionId === null || activeSectionId === undefined) ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-white hover:border-gray-300"
             )}
             onClick={() => setActiveSectionId(null)}
           >
@@ -155,7 +155,7 @@ export default function Sidebar() {
           <div 
             className={cn(
               "flex items-center gap-3 p-2 rounded-md border transition-all cursor-pointer",
-              activeSectionId === 'profile' ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-white hover:border-gray-300"
+              String(activeSectionId) === 'profile' ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-white hover:border-gray-300"
             )}
             onClick={() => setActiveSectionId('profile')}
           >
