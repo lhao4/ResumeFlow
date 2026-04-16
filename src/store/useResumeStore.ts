@@ -31,6 +31,9 @@ const DEFAULT_DATA: ResumeData = {
     role: '全栈开发工程师',
     avatarSize: 80,
     avatarShape: 'circle',
+    avatarScale: 1,
+    avatarX: 0,
+    avatarY: 0,
     fields: [
       { id: uuidv4(), label: '电话', value: '138-0000-0000', icon: 'Phone', visible: true },
       { id: uuidv4(), label: '邮箱', value: 'zhangsan@example.com', icon: 'Mail', visible: true },
@@ -177,7 +180,7 @@ export const useResumeStore = create<ResumeState>()(
       }),
       {
         name: 'resume-storage',
-        version: 5,
+        version: 6,
         migrate: (persistedState: any, version: number) => {
           let state = persistedState;
 
@@ -242,6 +245,20 @@ export const useResumeStore = create<ResumeState>()(
                 ...DEFAULT_DATA.style,
                 ...state.style,
                 forceSinglePage: state.style?.forceSinglePage ?? false,
+              }
+            };
+          }
+
+          if (version < 6) {
+            state = {
+              ...state,
+              profile: {
+                ...DEFAULT_DATA.profile,
+                ...state.profile,
+                avatarScale: state.profile?.avatarScale ?? 1,
+                avatarX: state.profile?.avatarX ?? 0,
+                avatarY: state.profile?.avatarY ?? 0,
+                avatarShape: state.profile?.avatarShape ?? 'circle',
               }
             };
           }

@@ -16,12 +16,14 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useResumeStore } from '../../store/useResumeStore';
-import { Settings, Type, Layout, Image as ImageIcon, Trash2, GripVertical, Eye, EyeOff, Plus, Sparkles, Download, Upload, Columns, Square } from 'lucide-react';
+import { Settings, Type, Layout, Image as ImageIcon, Trash2, GripVertical, Eye, EyeOff, Plus, Sparkles, Download, Upload, Columns, Square, Move, Maximize, Crop } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { ProfileField } from '../../types';
 import { polishContent, analyzeJD } from '../../services/aiService';
-import { useState } from 'react';
+import { getCroppedImg } from '../../lib/imageUtils';
+import { useState, useCallback } from 'react';
 import MarkdownRenderer from '../resume/MarkdownRenderer';
+import Cropper from 'react-easy-crop';
 
 interface SortableProfileFieldProps {
   field: ProfileField;
@@ -129,6 +131,42 @@ export default function Inspector() {
   const [jdText, setJdText] = useState('');
   const [jdAnalysis, setJdAnalysis] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  // Avatar Cropping State
+  const [crop, setCrop] = useState({ x: 0, y: 0 });
+  const [zoom, setZoom] = useState(1);
+  const [croppedAreaPixels, setCroppedAreaPixels] = useState(null);
+  const [showCropper, setShowCropper] = useState(false);
+  const [tempImage, setTempImage] = useState<string | null>(null);
+
+  const onCropComplete = useCallback((_croppedArea: any, croppedAreaPixels: any) => {
+    setCroppedAreaPixels(croppedAreaPixels);
+  }, []);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        setTempImage(reader.result as string);
+        setShowCropper(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const applyCrop = async () => {
+    if (tempImage && croppedAreaPixels) {
+      try {
+        const croppedImage = await getCroppedImg(tempImage, croppedAreaPixels);
+        updateProfile({ avatar: croppedImage });
+        setShowCropper(false);
+        setTempImage(null);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -539,56 +577,184 @@ export default function Inspector() {
             <span>照片设置</span>
           </div>
           
-          <div>
-            <label className="block text-xs text-gray-500 mb-1">照片 URL</label>
-            <input 
-              type="text" 
-              value={profile.avatar || ''} 
-              placeholder="https://..."
-              onChange={(e) => updateProfile({ avatar: e.target.value })}
-              className="w-full px-3 py-2 border rounded-md text-sm"
-            />
-          </div>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">照片 URL</label>
+              <input 
+                type="text" 
+                value={profile.avatar || ''} 
+                placeholder="https://..."
+                onChange={(e) => updateProfile({ avatar: e.target.value })}
+                className="w-full px-3 py-2 border rounded-md text-sm"
+              />
+            </div>
 
-          {profile.avatar && (
-            <>
-              <div>
-                <label className="block text-xs text-gray-500 mb-1">照片大小: {profile.avatarSize}px</label>
-                <input 
-                  type="range" 
-                  min="40" 
-                  max="150"
-                  value={profile.avatarSize} 
-                  onChange={(e) => updateProfile({ avatarSize: Number(e.target.value) })}
-                  className="w-full"
+            <div className="flex gap-2">
+              <label className="flex-1 flex items-center justify-center gap-2 py-2 border border-dashed border-gray-300 rounded-md text-xs text-gray-500 hover:bg-gray-50 cursor-pointer transition-colors">
+                <Upload className="w-3 h-3" />
+                上传本地照片
+                <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+              </label>
+              {profile.avatar && (
+                <button
+                  onClick={() => {
+                    setTempImage(profile.avatar!);
+                    setShowCropper(true);
+                  }}
+                  className="px-3 py-2 border border-gray-200 rounded-md text-xs text-gray-600 hover:bg-gray-50 transition-colors flex items-center gap-1"
+                >
+                  <Crop className="w-3 h-3" />
+                  裁剪
+                </button>
+              )}
+            </div>
+
+            {profile.avatar && (
+              <>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">照片大小: {profile.avatarSize}px</label>
+                    <input 
+                      type="range" 
+                      min="40" 
+                      max="200"
+                      value={profile.avatarSize} 
+                      onChange={(e) => updateProfile({ avatarSize: Number(e.target.value) })}
+                      className="w-full"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">缩放倍数: {profile.avatarScale.toFixed(1)}</label>
+                    <input 
+                      type="range" 
+                      min="0.5" 
+                      max="3"
+                      step="0.1"
+                      value={profile.avatarScale} 
+                      onChange={(e) => updateProfile({ avatarScale: Number(e.target.value) })}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1">水平移动: {profile.avatarX}px</label>
+                    <input 
+                      type="range" 
+                      min="-100" 
+                      max="100"
+                      value={profile.avatarX} 
+                      onChange={(e) => updateProfile({ avatarX: Number(e.target.value) })}
+                      className="w-full"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs text-gray-500 mb-1 font-medium">垂直移动: {profile.avatarY}px</label>
+                    <input 
+                      type="range" 
+                      min="-100" 
+                      max="100"
+                      value={profile.avatarY} 
+                      onChange={(e) => updateProfile({ avatarY: Number(e.target.value) })}
+                      className="w-full"
+                    />
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => updateProfile({ avatarScale: 1, avatarX: 0, avatarY: 0 })}
+                  className="w-full py-1.5 border border-gray-200 text-gray-500 rounded-md text-[10px] hover:bg-gray-50 transition-colors flex items-center justify-center gap-1"
+                >
+                  <Move className="w-3 h-3" />
+                  重置位置与缩放
+                </button>
+
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">照片形状</label>
+                  <div className="flex gap-2 mt-1">
+                    <button
+                      onClick={() => updateProfile({ avatarShape: 'circle' })}
+                      className={cn(
+                        "flex-1 py-2 text-[10px] border rounded-md transition-colors",
+                        profile.avatarShape === 'circle' ? "bg-blue-50 border-blue-500 text-blue-600" : "bg-white border-gray-200"
+                      )}
+                    >
+                      圆形
+                    </button>
+                    <button
+                      onClick={() => updateProfile({ avatarShape: 'rounded' })}
+                      className={cn(
+                        "flex-1 py-2 text-[10px] border rounded-md transition-colors",
+                        profile.avatarShape === 'rounded' ? "bg-blue-50 border-blue-500 text-blue-600" : "bg-white border-gray-200"
+                      )}
+                    >
+                      圆角
+                    </button>
+                    <button
+                      onClick={() => updateProfile({ avatarShape: 'rectangle' })}
+                      className={cn(
+                        "flex-1 py-2 text-[10px] border rounded-md transition-colors",
+                        profile.avatarShape === 'rectangle' ? "bg-blue-50 border-blue-500 text-blue-600" : "bg-white border-gray-200"
+                      )}
+                    >
+                      矩形
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+
+        {/* Cropping Modal */}
+        {showCropper && tempImage && (
+          <div className="fixed inset-0 z-[100] bg-black/80 flex flex-col items-center justify-center p-4">
+            <div className="relative w-full max-w-lg aspect-square bg-gray-900 rounded-lg overflow-hidden">
+              <Cropper
+                image={tempImage}
+                crop={crop}
+                zoom={zoom}
+                aspect={profile.avatarShape === 'rectangle' ? 3/4 : 1}
+                onCropChange={setCrop}
+                onCropComplete={onCropComplete}
+                onZoomChange={setZoom}
+              />
+            </div>
+            <div className="w-full max-w-lg mt-4 flex flex-col gap-4">
+              <div className="flex items-center gap-4 text-white">
+                <span className="text-xs">缩放</span>
+                <input
+                  type="range"
+                  value={zoom}
+                  min={1}
+                  max={3}
+                  step={0.1}
+                  aria-labelledby="Zoom"
+                  onChange={(e) => setZoom(Number(e.target.value))}
+                  className="flex-1"
                 />
               </div>
-              <div>
-                <label className="block text-xs text-gray-500 mb-1">照片形状</label>
-                <div className="flex gap-2 mt-1">
-                  <button
-                    onClick={() => updateProfile({ avatarShape: 'circle' })}
-                    className={cn(
-                      "flex-1 py-2 text-xs border rounded-md transition-colors",
-                      profile.avatarShape === 'circle' ? "bg-blue-50 border-blue-500 text-blue-600" : "bg-white border-gray-200"
-                    )}
-                  >
-                    圆形
-                  </button>
-                  <button
-                    onClick={() => updateProfile({ avatarShape: 'rounded' })}
-                    className={cn(
-                      "flex-1 py-2 text-xs border rounded-md transition-colors",
-                      profile.avatarShape === 'rounded' ? "bg-blue-50 border-blue-500 text-blue-600" : "bg-white border-gray-200"
-                    )}
-                  >
-                    圆角矩形
-                  </button>
-                </div>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => {
+                    setShowCropper(false);
+                    setTempImage(null);
+                  }}
+                  className="flex-1 py-2 bg-gray-700 text-white rounded-md text-sm hover:bg-gray-600 transition-colors"
+                >
+                  取消
+                </button>
+                <button
+                  onClick={applyCrop}
+                  className="flex-1 py-2 bg-blue-600 text-white rounded-md text-sm font-bold hover:bg-blue-700 transition-colors"
+                >
+                  应用裁剪
+                </button>
               </div>
-            </>
-          )}
-        </div>
+            </div>
+          </div>
+        )}
       </aside>
     );
   }

@@ -127,18 +127,21 @@ export default function Canvas() {
                 <div 
                   className={cn(
                     "overflow-hidden border-2 bg-gray-50 flex-shrink-0",
-                    profile.avatarShape === 'circle' ? "rounded-full" : "rounded-lg"
+                    profile.avatarShape === 'circle' ? "rounded-full" : profile.avatarShape === 'rounded' ? "rounded-lg" : "rounded-none"
                   )}
                   style={{ 
                     width: `${profile.avatarSize}px`, 
-                    height: `${profile.avatarSize}px`,
+                    height: profile.avatarShape === 'rectangle' ? `${profile.avatarSize * 1.33}px` : `${profile.avatarSize}px`,
                     borderColor: style.themeColor + '40'
                   }}
                 >
                   <img 
                     src={profile.avatar} 
                     alt={profile.name} 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover origin-center"
+                    style={{
+                      transform: `scale(${profile.avatarScale}) translate(${profile.avatarX}px, ${profile.avatarY}px)`
+                    }}
                     referrerPolicy="no-referrer"
                   />
                 </div>
@@ -174,18 +177,21 @@ export default function Canvas() {
               <div 
                 className={cn(
                   "overflow-hidden border-2 bg-gray-50 mb-6 mx-auto",
-                  profile.avatarShape === 'circle' ? "rounded-full" : "rounded-lg"
+                  profile.avatarShape === 'circle' ? "rounded-full" : profile.avatarShape === 'rounded' ? "rounded-lg" : "rounded-none"
                 )}
                 style={{ 
                   width: `${profile.avatarSize}px`, 
-                  height: `${profile.avatarSize}px`,
+                  height: profile.avatarShape === 'rectangle' ? `${profile.avatarSize * 1.33}px` : `${profile.avatarSize}px`,
                   borderColor: style.themeColor + '40'
                 }}
               >
                 <img 
                   src={profile.avatar} 
                   alt={profile.name} 
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover origin-center"
+                  style={{
+                    transform: `scale(${profile.avatarScale}) translate(${profile.avatarX}px, ${profile.avatarY}px)`
+                  }}
                   referrerPolicy="no-referrer"
                 />
               </div>

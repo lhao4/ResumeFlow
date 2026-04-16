@@ -39,7 +39,10 @@ export type Profile = {
   role: string;
   avatar?: string;
   avatarSize: number;
-  avatarShape: 'circle' | 'rounded';
+  avatarShape: 'circle' | 'rounded' | 'rectangle';
+  avatarScale: number;
+  avatarX: number;
+  avatarY: number;
   fields: ProfileField[];
 };
 
