@@ -9,12 +9,18 @@ export default function EditorLayout() {
   const darkMode = useResumeStore(state => state.darkMode);
 
   return (
-    <div className={cn("flex flex-col h-screen bg-gray-100 overflow-hidden", darkMode && "dark")}>
-      <Toolbar />
-      <div className="flex flex-1 overflow-hidden bg-background text-foreground">
-        <Sidebar />
+    <div className="flex flex-col h-screen bg-gray-100 overflow-hidden">
+      <div className={cn(darkMode && "dark")}>
+        <Toolbar />
+      </div>
+      <div className="flex flex-1 overflow-hidden">
+        <div className={cn("h-full", darkMode && "dark")}>
+          <Sidebar />
+        </div>
         <Canvas />
-        <Inspector />
+        <div className={cn("h-full", darkMode && "dark")}>
+          <Inspector />
+        </div>
       </div>
     </div>
   );

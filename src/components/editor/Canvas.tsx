@@ -5,7 +5,7 @@ import { cn } from '../../lib/utils';
 import { QRCodeSVG } from 'qrcode.react';
 
 export default function Canvas() {
-  const { profile, sections, style, darkMode } = useResumeStore();
+  const { profile, sections, style, activeSectionId, setActiveSectionId } = useResumeStore();
 
   const pageStyle = {
     paddingTop: `${style.marginTop}px`,
@@ -52,16 +52,23 @@ export default function Canvas() {
   );
 
   return (
-    <main className={cn("flex-1 overflow-y-auto p-8 flex flex-col items-center print:bg-white print:p-0 print:overflow-visible transition-colors duration-200", darkMode ? "bg-gray-900" : "bg-gray-200")}>
+    <main className="flex-1 overflow-y-auto p-8 flex flex-col items-center print:bg-white print:p-0 print:overflow-visible bg-gray-200 transition-colors duration-200">
       {/* A4 Page Container */}
       <div 
-        className="bg-white shadow-2xl w-[210mm] min-h-[297mm] h-fit print:shadow-none print:w-full relative"
+        className="bg-white shadow-2xl w-[210mm] min-h-[297mm] h-fit print:shadow-none print:w-full relative text-gray-900"
         style={pageStyle}
       >
         {style.layout === 'single' ? (
           <>
             {/* Profile Header */}
-            <header className="mb-6 flex justify-between items-start border-b pb-6" style={{ borderColor: style.themeColor + '20' }}>
+            <header 
+              className={cn(
+                "mb-6 flex justify-between items-start border-b pb-6 cursor-pointer transition-all border-2 border-transparent hover:border-blue-500/30",
+                activeSectionId === 'profile' && "border-blue-500 bg-blue-50/30"
+              )} 
+              style={{ borderColor: activeSectionId === 'profile' ? undefined : style.themeColor + '20' }}
+              onClick={() => setActiveSectionId('profile')}
+            >
               <div className="flex-1">
                 <h1 className="text-3xl font-bold mb-2" style={{ color: style.themeColor }}>
                   {profile.name}
@@ -114,14 +121,32 @@ export default function Canvas() {
 
             {/* Sections */}
             <div className="space-y-0">
-              {visibleSections.map(renderSection)}
+              {visibleSections.map(section => (
+                <div 
+                  key={section.id}
+                  className={cn(
+                    "group relative p-4 rounded-lg transition-all cursor-pointer border-2 border-transparent hover:border-blue-500/30",
+                    activeSectionId === section.id && "border-blue-500 bg-blue-50/30"
+                  )}
+                  onClick={() => setActiveSectionId(section.id)}
+                >
+                  {renderSection(section)}
+                </div>
+              ))}
             </div>
           </>
         ) : (
           <div className="flex gap-8 h-full">
             {/* Sidebar */}
             <aside style={{ width: `${style.sidebarWidth}%` }} className="flex-shrink-0">
-              {profile.avatar && (
+              <div 
+                className={cn(
+                  "p-4 rounded-lg transition-all cursor-pointer border-2 border-transparent hover:border-blue-500/30 mb-6",
+                  activeSectionId === 'profile' && "border-blue-500 bg-blue-50/30"
+                )}
+                onClick={() => setActiveSectionId('profile')}
+              >
+                {profile.avatar && (
                 <div 
                   className={cn(
                     "overflow-hidden border-2 bg-gray-50 mb-6 mx-auto",
@@ -169,15 +194,39 @@ export default function Canvas() {
                 </div>
               )}
 
+              </div>
+
               <div className="space-y-6">
-                {sidebarSections.map(renderSection)}
+                {sidebarSections.map(section => (
+                  <div 
+                    key={section.id}
+                    className={cn(
+                      "p-4 rounded-lg transition-all cursor-pointer border-2 border-transparent hover:border-blue-500/30",
+                      activeSectionId === section.id && "border-blue-500 bg-blue-50/30"
+                    )}
+                    onClick={() => setActiveSectionId(section.id)}
+                  >
+                    {renderSection(section)}
+                  </div>
+                ))}
               </div>
             </aside>
 
             {/* Main Content */}
             <div className="flex-1 border-l pl-8" style={{ borderColor: style.themeColor + '10' }}>
               <div className="space-y-0">
-                {mainSections.map(renderSection)}
+                {mainSections.map(section => (
+                  <div 
+                    key={section.id}
+                    className={cn(
+                      "p-4 rounded-lg transition-all cursor-pointer border-2 border-transparent hover:border-blue-500/30",
+                      activeSectionId === section.id && "border-blue-500 bg-blue-50/30"
+                    )}
+                    onClick={() => setActiveSectionId(section.id)}
+                  >
+                    {renderSection(section)}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
