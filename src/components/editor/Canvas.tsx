@@ -32,7 +32,7 @@ export default function Canvas() {
             <p className="text-lg font-medium text-gray-600 mb-4">{profile.role}</p>
             
             <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-500">
-              {profile.fields.filter(f => f.visible).map((field) => {
+              {(profile.fields || []).filter(f => f.visible).map((field) => {
                 const IconComponent = (Icons as any)[field.icon || ''] || null;
                 return (
                   <div key={field.id} className="flex items-center gap-1">

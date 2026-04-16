@@ -159,6 +159,29 @@ export const useResumeStore = create<ResumeState>()(
     }),
     {
       name: 'resume-storage',
+      version: 1,
+      migrate: (persistedState: any, version: number) => {
+        if (version === 0) {
+          // Migration from old profile structure to new dynamic fields
+          const profile = persistedState.profile || {};
+          const fields = [];
+          
+          if (profile.phone) fields.push({ id: uuidv4(), label: '电话', value: profile.phone, icon: 'Phone', visible: true });
+          if (profile.email) fields.push({ id: uuidv4(), label: '邮箱', value: profile.email, icon: 'Mail', visible: true });
+          if (profile.location) fields.push({ id: uuidv4(), label: '地点', value: profile.location, icon: 'MapPin', visible: true });
+          if (profile.github) fields.push({ id: uuidv4(), label: 'GitHub', value: profile.github, icon: 'Github', visible: true });
+          if (profile.website) fields.push({ id: uuidv4(), label: '个人网站', value: profile.website, icon: 'Globe', visible: true });
+
+          return {
+            ...persistedState,
+            profile: {
+              ...profile,
+              fields: fields.length > 0 ? fields : DEFAULT_DATA.profile.fields,
+            },
+          };
+        }
+        return persistedState;
+      },
     }
   )
 );

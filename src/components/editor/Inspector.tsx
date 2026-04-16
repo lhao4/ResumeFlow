@@ -131,9 +131,10 @@ export default function Inspector() {
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      const oldIndex = profile.fields.findIndex((f) => f.id === active.id);
-      const newIndex = profile.fields.findIndex((f) => f.id === over.id);
-      reorderProfileFields(arrayMove(profile.fields, oldIndex, newIndex));
+      const fields = profile.fields || [];
+      const oldIndex = fields.findIndex((f) => f.id === active.id);
+      const newIndex = fields.findIndex((f) => f.id === over.id);
+      reorderProfileFields(arrayMove(fields, oldIndex, newIndex));
     }
   };
 
@@ -308,10 +309,10 @@ export default function Inspector() {
               onDragEnd={handleDragEnd}
             >
               <SortableContext
-                items={profile.fields.map((f) => f.id)}
+                items={(profile.fields || []).map((f) => f.id)}
                 strategy={verticalListSortingStrategy}
               >
-                {profile.fields.map((field) => (
+                {(profile.fields || []).map((field) => (
                   <SortableProfileField key={field.id} field={field} />
                 ))}
               </SortableContext>
