@@ -1,0 +1,67 @@
+@import "tailwindcss";
+
+@layer base {
+  @media print {
+    @page {
+      margin: 0;
+      size: A4;
+    }
+    body {
+      background-color: white !important;
+      -webkit-print-color-adjust: exact;
+    }
+    .print\:hidden {
+      display: none !important;
+    }
+  }
+}
+
+/* Markdown Resume Styles */
+.markdown-body {
+  font-size: inherit;
+  line-height: inherit;
+  color: #374151;
+}
+
+.markdown-body h3 {
+  font-size: 1.1em;
+  font-weight: 700;
+  margin-top: 0.5em;
+  margin-bottom: 0.25em;
+  color: #111827;
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.markdown-body p {
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+
+.markdown-body ul {
+  list-style-type: disc;
+  padding-left: 1.25em;
+  margin-top: 0.25em;
+  margin-bottom: 0.25em;
+}
+
+.markdown-body li {
+  margin-top: 0.1em;
+  margin-bottom: 0.1em;
+}
+
+.markdown-body strong {
+  font-weight: 600;
+  color: #111827;
+}
+
+.markdown-body a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.markdown-body hr {
+  margin: 0.5em 0;
+  border-color: rgba(0, 0, 0, 0.1);
+}
