@@ -18,13 +18,14 @@ import { CSS } from '@dnd-kit/utilities';
 import { useResumeStore } from '../../store/useResumeStore';
 import { Settings, Type, Layout, Image as ImageIcon, Trash2, GripVertical, Eye, EyeOff, Plus, Sparkles, Download, Upload, Columns, Square, Move, Maximize, Crop, Palette, Bookmark, Check, Key } from 'lucide-react';
 import { cn } from '../../lib/utils';
-import { ProfileField } from '../../types';
+import { AIProvider, ProfileField } from '../../types';
 import { polishContent, analyzeJD } from '../../services/aiService';
 import { getCroppedImg } from '../../lib/imageUtils';
 import { useState, useCallback } from 'react';
 import MarkdownRenderer from '../resume/MarkdownRenderer';
 import Cropper from 'react-easy-crop';
 import { PRESET_TEMPLATES } from '../../constants/templates';
+import { AI_PROVIDER_PRESETS } from '../../constants/aiProviders';
 
 interface SortableProfileFieldProps {
   field: ProfileField;
@@ -130,9 +131,11 @@ export default function Inspector() {
     addCustomTemplate,
     deleteCustomTemplate,
     applyTemplate,
-    apiKey,
-    setApiKey
+    aiConfig,
+    updateAIConfig
   } = useResumeStore();
+
+  const providerPreset = AI_PROVIDER_PRESETS[aiConfig.provider];
 
   const [isPolishing, setIsPolishing] = useState(false);
   const [jdText, setJdText] = useState('');
@@ -213,6 +216,16 @@ export default function Inspector() {
     const result = await analyzeJD(resumeText, jdText);
     setJdAnalysis(result);
     setIsAnalyzing(false);
+  };
+
+  const handleProviderChange = (provider: AIProvider) => {
+    const preset = AI_PROVIDER_PRESETS[provider];
+    updateAIConfig({
+      provider,
+      model: preset.defaultModel,
+      baseUrl: preset.defaultBaseUrl,
+      apiKey: '',
+    });
   };
 
   const handleExport = () => {
@@ -621,28 +634,72 @@ export default function Inspector() {
             </div>
             <div className="space-y-3">
               <p className="text-[10px] text-gray-500 leading-relaxed">
-                默认使用系统提供的 Gemini API。如果您有自己的 API Key，可以在下方设置以获得更稳定的服务。
+                已切换为多厂商兼容模式。支持 Gemini、ChatGPT、Claude、Kimi、豆包、GLM、千问、DeepSeek。您可以在这里设置当前厂商的模型、Base URL 和 API Key。
               </p>
-              <div className="relative">
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">服务商</label>
+                <select
+                  value={aiConfig.provider}
+                  onChange={(e) => handleProviderChange(e.target.value as AIProvider)}
+                  className="w-full px-3 py-2 border rounded-md text-sm bg-white"
+                >
+                  {Object.entries(AI_PROVIDER_PRESETS).map(([provider, preset]) => (
+                    <option key={provider} value={provider}>
+                      {preset.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <p className="text-[10px] text-gray-500 leading-relaxed">
+                {providerPreset.description}
+              </p>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">模型名称</label>
                 <input 
-                  type="password" 
-                  value={apiKey || ''} 
-                  onChange={(e) => setApiKey(e.target.value)}
-                  placeholder="输入您的 Gemini API Key..."
-                  className="w-full px-3 py-2 border rounded-md text-sm pr-10"
+                  type="text"
+                  value={aiConfig.model || ''} 
+                  onChange={(e) => updateAIConfig({ model: e.target.value })}
+                  placeholder={providerPreset.modelPlaceholder || '输入模型名称...'}
+                  className="w-full px-3 py-2 border rounded-md text-sm"
                 />
-                {apiKey && (
-                  <button 
-                    onClick={() => setApiKey('')}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500"
-                  >
-                    <Trash2 className="w-3 h-3" />
-                  </button>
-                )}
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">Base URL</label>
+                <input 
+                  type="text"
+                  value={aiConfig.baseUrl || ''} 
+                  onChange={(e) => updateAIConfig({ baseUrl: e.target.value })}
+                  placeholder={providerPreset.baseUrlPlaceholder || '当前厂商无需填写 Base URL'}
+                  disabled={aiConfig.provider === 'gemini'}
+                  className={cn(
+                    "w-full px-3 py-2 border rounded-md text-sm",
+                    aiConfig.provider === 'gemini' && "bg-gray-50 text-gray-400 cursor-not-allowed"
+                  )}
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">API Key</label>
+                <div className="relative">
+                  <input 
+                    type="password" 
+                    value={aiConfig.apiKey || ''} 
+                    onChange={(e) => updateAIConfig({ apiKey: e.target.value })}
+                    placeholder={`输入您的 ${providerPreset.label} API Key...`}
+                    className="w-full px-3 py-2 border rounded-md text-sm pr-10"
+                  />
+                  {aiConfig.apiKey && (
+                    <button 
+                      onClick={() => updateAIConfig({ apiKey: '' })}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
               </div>
               <div className="flex items-center gap-2 text-[10px] text-gray-400">
-                <Check className={cn("w-3 h-3", apiKey ? "text-green-500" : "text-gray-300")} />
-                <span>{apiKey ? "已启用自定义 Key" : "正在使用系统默认 Key"}</span>
+                <Check className={cn("w-3 h-3", aiConfig.apiKey ? "text-green-500" : "text-gray-300")} />
+                <span>{aiConfig.apiKey ? "已启用当前厂商的自定义 Key" : `未填写自定义 Key，将尝试读取环境变量 ${providerPreset.apiKeyEnvVar}`}</span>
               </div>
             </div>
           </section>

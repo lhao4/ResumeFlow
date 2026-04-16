@@ -47,17 +47,25 @@ npm install
 
 ### 2. 配置环境变量
 
-复制 `.env.example` 为 `.env.local`，至少可配置：
+复制 `.env.example` 为 `.env.local`。如果要启用 AI 功能，可按所选厂商填写对应 Key，例如：
 
 ```env
 GEMINI_API_KEY=your_gemini_api_key
+OPENAI_API_KEY=your_openai_api_key
+ANTHROPIC_API_KEY=your_anthropic_api_key
+KIMI_API_KEY=your_kimi_api_key
+DOUBAO_API_KEY=your_doubao_api_key
+GLM_API_KEY=your_glm_api_key
+QWEN_API_KEY=your_qwen_api_key
+DEEPSEEK_API_KEY=your_deepseek_api_key
 ```
 
 说明：
 
-- `GEMINI_API_KEY` 是可选项，仅在使用 AI 功能时需要
-- 如果不想写入本地环境变量，也可以在应用右侧设置面板中填写自定义 API Key
-- 项目在 AI Studio 场景下也可以使用平台注入的默认 Key
+- AI 功能支持 `Gemini`、`ChatGPT / OpenAI`、`Claude`、`Kimi`、`豆包`、`GLM`、`千问`、`DeepSeek`
+- 右侧 API 设置面板支持切换服务商、填写模型名、Base URL 和自定义 API Key
+- 如果不想写入本地环境变量，也可以直接在应用右侧设置面板中填写当前厂商的 Key
+- 豆包通常需要填写火山方舟推理接入点 ID 作为模型名
 
 ### 3. 启动开发环境
 
@@ -110,8 +118,9 @@ npm run preview
 
 如果 AI 功能没有生效，优先检查：
 
-- 是否已配置 `GEMINI_API_KEY`
-- 网络环境是否可以访问 Gemini API
+- 是否已为当前所选厂商配置对应 API Key
+- 模型名称和 Base URL 是否填写正确
+- 网络环境是否可以访问对应厂商 API
 - Key 是否具备对应模型调用权限
 
 ## 数据存储

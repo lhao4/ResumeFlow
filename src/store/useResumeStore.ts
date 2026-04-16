@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { temporal } from 'zundo';
 import { v4 as uuidv4 } from 'uuid';
-import { ResumeData, ResumeSection, ResumeStyle, Profile, ProfileField } from '../types';
+import { ResumeData, ResumeSection, ResumeStyle, Profile, ProfileField, AIConfig } from '../types';
 
 interface ResumeState extends ResumeData {
   activeSectionId: string | null;
@@ -22,7 +22,7 @@ interface ResumeState extends ResumeData {
   applyTemplate: (template: Partial<ResumeData>) => void;
   addCustomTemplate: (name: string) => void;
   deleteCustomTemplate: (id: string) => void;
-  setApiKey: (key: string) => void;
+  updateAIConfig: (config: Partial<AIConfig>) => void;
   resetResume: () => void;
 }
 
@@ -104,7 +104,12 @@ const DEFAULT_DATA: ResumeData = {
     printFooter: '',
   },
   customTemplates: [],
-  apiKey: '',
+  aiConfig: {
+    provider: 'gemini',
+    model: 'gemini-2.5-flash',
+    apiKey: '',
+    baseUrl: '',
+  },
 };
 
 export const useResumeStore = create<ResumeState>()(
@@ -214,12 +219,13 @@ export const useResumeStore = create<ResumeState>()(
           set((state) => ({
             customTemplates: state.customTemplates.filter((t) => t.id !== id),
           })),
-        setApiKey: (apiKey) => set({ apiKey }),
+        updateAIConfig: (aiConfig) =>
+          set((state) => ({ aiConfig: { ...state.aiConfig, ...aiConfig } })),
         resetResume: () => set({ ...DEFAULT_DATA, activeSectionId: null }),
       }),
       {
         name: 'resume-storage',
-        version: 8,
+        version: 9,
         migrate: (persistedState: any, version: number) => {
           let state = persistedState;
 
@@ -319,6 +325,17 @@ export const useResumeStore = create<ResumeState>()(
                 printHeader: state.style?.printHeader || '',
                 printFooter: state.style?.printFooter || '',
               }
+            };
+          }
+
+          if (version < 9) {
+            state = {
+              ...state,
+              aiConfig: {
+                ...DEFAULT_DATA.aiConfig,
+                ...(state.aiConfig || {}),
+                apiKey: state.aiConfig?.apiKey || state.apiKey || '',
+              },
             };
           }
 

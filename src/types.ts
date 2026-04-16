@@ -56,6 +56,25 @@ export type Template = {
   profile: Partial<Profile>;
 };
 
+export type AIProvider =
+  | 'gemini'
+  | 'openai'
+  | 'claude'
+  | 'kimi'
+  | 'doubao'
+  | 'glm'
+  | 'qwen'
+  | 'deepseek';
+
+export type AIProtocol = 'gemini' | 'anthropic' | 'openai-compatible';
+
+export type AIConfig = {
+  provider: AIProvider;
+  model: string;
+  apiKey: string;
+  baseUrl: string;
+};
+
 export type ResumeData = {
   meta: {
     title: string;
@@ -64,5 +83,6 @@ export type ResumeData = {
   sections: ResumeSection[];
   style: ResumeStyle;
   customTemplates: Template[];
+  aiConfig: AIConfig;
   apiKey?: string;
 };
