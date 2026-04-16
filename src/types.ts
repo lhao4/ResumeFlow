@@ -64,4 +64,5 @@ export type ResumeData = {
   sections: ResumeSection[];
   style: ResumeStyle;
   customTemplates: Template[];
+  apiKey?: string;
 };

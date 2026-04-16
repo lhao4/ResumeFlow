@@ -22,6 +22,7 @@ interface ResumeState extends ResumeData {
   applyTemplate: (template: Partial<ResumeData>) => void;
   addCustomTemplate: (name: string) => void;
   deleteCustomTemplate: (id: string) => void;
+  setApiKey: (key: string) => void;
   resetResume: () => void;
 }
 
@@ -103,6 +104,7 @@ const DEFAULT_DATA: ResumeData = {
     printFooter: '',
   },
   customTemplates: [],
+  apiKey: '',
 };
 
 export const useResumeStore = create<ResumeState>()(
@@ -212,6 +214,7 @@ export const useResumeStore = create<ResumeState>()(
           set((state) => ({
             customTemplates: state.customTemplates.filter((t) => t.id !== id),
           })),
+        setApiKey: (apiKey) => set({ apiKey }),
         resetResume: () => set({ ...DEFAULT_DATA, activeSectionId: null }),
       }),
       {

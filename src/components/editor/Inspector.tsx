@@ -16,7 +16,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useResumeStore } from '../../store/useResumeStore';
-import { Settings, Type, Layout, Image as ImageIcon, Trash2, GripVertical, Eye, EyeOff, Plus, Sparkles, Download, Upload, Columns, Square, Move, Maximize, Crop, Palette, Bookmark, Check } from 'lucide-react';
+import { Settings, Type, Layout, Image as ImageIcon, Trash2, GripVertical, Eye, EyeOff, Plus, Sparkles, Download, Upload, Columns, Square, Move, Maximize, Crop, Palette, Bookmark, Check, Key } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { ProfileField } from '../../types';
 import { polishContent, analyzeJD } from '../../services/aiService';
@@ -129,7 +129,9 @@ export default function Inspector() {
     customTemplates,
     addCustomTemplate,
     deleteCustomTemplate,
-    applyTemplate
+    applyTemplate,
+    apiKey,
+    setApiKey
   } = useResumeStore();
 
   const [isPolishing, setIsPolishing] = useState(false);
@@ -607,6 +609,40 @@ export default function Inspector() {
                   onChange={(e) => updateStyle({ printFooter: e.target.value })}
                   className="w-full px-3 py-2 border rounded-md text-sm"
                 />
+              </div>
+            </div>
+          </section>
+
+          {/* API Key Management */}
+          <section className="pt-4 border-t">
+            <div className="flex items-center gap-2 mb-4 text-sm font-bold text-gray-900 uppercase tracking-wider">
+              <Key className="w-4 h-4 text-orange-500" />
+              <span>API 设置</span>
+            </div>
+            <div className="space-y-3">
+              <p className="text-[10px] text-gray-500 leading-relaxed">
+                默认使用系统提供的 Gemini API。如果您有自己的 API Key，可以在下方设置以获得更稳定的服务。
+              </p>
+              <div className="relative">
+                <input 
+                  type="password" 
+                  value={apiKey || ''} 
+                  onChange={(e) => setApiKey(e.target.value)}
+                  placeholder="输入您的 Gemini API Key..."
+                  className="w-full px-3 py-2 border rounded-md text-sm pr-10"
+                />
+                {apiKey && (
+                  <button 
+                    onClick={() => setApiKey('')}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-red-500"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                  </button>
+                )}
+              </div>
+              <div className="flex items-center gap-2 text-[10px] text-gray-400">
+                <Check className={cn("w-3 h-3", apiKey ? "text-green-500" : "text-gray-300")} />
+                <span>{apiKey ? "已启用自定义 Key" : "正在使用系统默认 Key"}</span>
               </div>
             </div>
           </section>
