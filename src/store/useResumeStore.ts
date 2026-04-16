@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { temporal } from 'zundo';
 import { v4 as uuidv4 } from 'uuid';
 import { ResumeData, ResumeSection, ResumeStyle, Profile, ProfileField } from '../types';
 
@@ -93,137 +94,145 @@ const DEFAULT_DATA: ResumeData = {
 };
 
 export const useResumeStore = create<ResumeState>()(
-  persist(
-    (set) => ({
-      ...DEFAULT_DATA,
-      activeSectionId: null,
-      setActiveSectionId: (id) => set({ activeSectionId: id }),
-      updateProfile: (profile) =>
-        set((state) => ({ profile: { ...state.profile, ...profile } })),
-      addProfileField: (label, value, icon) =>
-        set((state) => ({
-          profile: {
-            ...state.profile,
-            fields: [
-              ...state.profile.fields,
-              { id: uuidv4(), label, value, icon, visible: true },
-            ],
-          },
-        })),
-      updateProfileField: (id, updatedField) =>
-        set((state) => ({
-          profile: {
-            ...state.profile,
-            fields: state.profile.fields.map((f) =>
-              f.id === id ? { ...f, ...updatedField } : f
-            ),
-          },
-        })),
-      deleteProfileField: (id) =>
-        set((state) => ({
-          profile: {
-            ...state.profile,
-            fields: state.profile.fields.filter((f) => f.id !== id),
-          },
-        })),
-      reorderProfileFields: (fields) =>
-        set((state) => ({
-          profile: { ...state.profile, fields },
-        })),
-      updateStyle: (style) =>
-        set((state) => ({ style: { ...state.style, ...style } })),
-      updateMeta: (meta) =>
-        set((state) => ({ meta: { ...state.meta, ...meta } })),
-      addSection: (type, title) =>
-        set((state) => ({
-          sections: [
-            ...state.sections,
-            {
-              id: uuidv4(),
-              type,
-              title,
-              markdown: '',
-              visible: true,
-              spacingTop: 10,
-              spacingBottom: 10,
-            },
-          ],
-        })),
-      updateSection: (id, updatedSection) =>
-        set((state) => ({
-          sections: state.sections.map((s) =>
-            s.id === id ? { ...s, ...updatedSection } : s
-          ),
-        })),
-      deleteSection: (id) =>
-        set((state) => ({
-          sections: state.sections.filter((s) => s.id !== id),
-          activeSectionId: state.activeSectionId === id ? null : state.activeSectionId,
-        })),
-      reorderSections: (sections) => set({ sections }),
-      resetResume: () => set({ ...DEFAULT_DATA, activeSectionId: null }),
-    }),
-    {
-      name: 'resume-storage',
-      version: 4,
-      migrate: (persistedState: any, version: number) => {
-        let state = persistedState;
-
-        if (version < 1) {
-          // Migration from old profile structure to new dynamic fields
-          const profile = state.profile || {};
-          const fields = [];
-          
-          if (profile.phone) fields.push({ id: uuidv4(), label: '电话', value: profile.phone, icon: 'Phone', visible: true });
-          if (profile.email) fields.push({ id: uuidv4(), label: '邮箱', value: profile.email, icon: 'Mail', visible: true });
-          if (profile.location) fields.push({ id: uuidv4(), label: '地点', value: profile.location, icon: 'MapPin', visible: true });
-          if (profile.github) fields.push({ id: uuidv4(), label: 'GitHub', value: profile.github, icon: 'Github', visible: true });
-          if (profile.website) fields.push({ id: uuidv4(), label: '个人网站', value: profile.website, icon: 'Globe', visible: true });
-
-          state = {
-            ...state,
+  temporal(
+    persist(
+      (set) => ({
+        ...DEFAULT_DATA,
+        activeSectionId: null,
+        setActiveSectionId: (id) => set({ activeSectionId: id }),
+        updateProfile: (profile) =>
+          set((state) => ({ profile: { ...state.profile, ...profile } })),
+        addProfileField: (label, value, icon) =>
+          set((state) => ({
             profile: {
-              ...profile,
-              fields: fields.length > 0 ? fields : DEFAULT_DATA.profile.fields,
+              ...state.profile,
+              fields: [
+                ...state.profile.fields,
+                { id: uuidv4(), label, value, icon, visible: true },
+              ],
             },
-          };
-        }
+          })),
+        updateProfileField: (id, updatedField) =>
+          set((state) => ({
+            profile: {
+              ...state.profile,
+              fields: state.profile.fields.map((f) =>
+                f.id === id ? { ...f, ...updatedField } : f
+              ),
+            },
+          })),
+        deleteProfileField: (id) =>
+          set((state) => ({
+            profile: {
+              ...state.profile,
+              fields: state.profile.fields.filter((f) => f.id !== id),
+            },
+          })),
+        reorderProfileFields: (fields) =>
+          set((state) => ({
+            profile: { ...state.profile, fields },
+          })),
+        updateStyle: (style) =>
+          set((state) => ({ style: { ...state.style, ...style } })),
+        updateMeta: (meta) =>
+          set((state) => ({ meta: { ...state.meta, ...meta } })),
+        addSection: (type, title) =>
+          set((state) => ({
+            sections: [
+              ...state.sections,
+              {
+                id: uuidv4(),
+                type,
+                title,
+                markdown: '',
+                visible: true,
+                spacingTop: 10,
+                spacingBottom: 10,
+              },
+            ],
+          })),
+        updateSection: (id, updatedSection) =>
+          set((state) => ({
+            sections: state.sections.map((s) =>
+              s.id === id ? { ...s, ...updatedSection } : s
+            ),
+          })),
+        deleteSection: (id) =>
+          set((state) => ({
+            sections: state.sections.filter((s) => s.id !== id),
+            activeSectionId: state.activeSectionId === id ? null : state.activeSectionId,
+          })),
+        reorderSections: (sections) => set({ sections }),
+        resetResume: () => set({ ...DEFAULT_DATA, activeSectionId: null }),
+      }),
+      {
+        name: 'resume-storage',
+        version: 4,
+        migrate: (persistedState: any, version: number) => {
+          let state = persistedState;
 
-        if (version < 2) {
-          // Add default divider styles if missing
-          state = {
-            ...state,
-            style: {
-              ...DEFAULT_DATA.style,
-              ...state.style,
-              dividerColor: state.style?.dividerColor || state.style?.themeColor || DEFAULT_DATA.style.dividerColor,
-              dividerWidth: state.style?.dividerWidth ?? DEFAULT_DATA.style.dividerWidth,
-              dividerHeight: state.style?.dividerHeight ?? DEFAULT_DATA.style.dividerHeight,
-            }
-          };
-        }
+          if (version < 1) {
+            // Migration from old profile structure to new dynamic fields
+            const profile = state.profile || {};
+            const fields = [];
+            
+            if (profile.phone) fields.push({ id: uuidv4(), label: '电话', value: profile.phone, icon: 'Phone', visible: true });
+            if (profile.email) fields.push({ id: uuidv4(), label: '邮箱', value: profile.email, icon: 'Mail', visible: true });
+            if (profile.location) fields.push({ id: uuidv4(), label: '地点', value: profile.location, icon: 'MapPin', visible: true });
+            if (profile.github) fields.push({ id: uuidv4(), label: 'GitHub', value: profile.github, icon: 'Github', visible: true });
+            if (profile.website) fields.push({ id: uuidv4(), label: '个人网站', value: profile.website, icon: 'Globe', visible: true });
 
-        if (version < 3) {
-          state = {
-            ...state,
-            style: {
-              ...DEFAULT_DATA.style,
-              ...state.style,
-              layout: state.style?.layout || 'single',
-              sidebarWidth: state.style?.sidebarWidth || 30,
-              showPageNumbers: state.style?.showPageNumbers ?? true,
-            }
-          };
-        }
+            state = {
+              ...state,
+              profile: {
+                ...profile,
+                fields: fields.length > 0 ? fields : DEFAULT_DATA.profile.fields,
+              },
+            };
+          }
 
-        if (version < 4) {
-          state = {
-            ...state,
-            darkMode: state.darkMode ?? false,
-          };
-        }
+          if (version < 2) {
+            // Add default divider styles if missing
+            state = {
+              ...state,
+              style: {
+                ...DEFAULT_DATA.style,
+                ...state.style,
+                dividerColor: state.style?.dividerColor || state.style?.themeColor || DEFAULT_DATA.style.dividerColor,
+                dividerWidth: state.style?.dividerWidth ?? DEFAULT_DATA.style.dividerWidth,
+                dividerHeight: state.style?.dividerHeight ?? DEFAULT_DATA.style.dividerHeight,
+              }
+            };
+          }
 
-        return state;
+          if (version < 3) {
+            state = {
+              ...state,
+              style: {
+                ...DEFAULT_DATA.style,
+                ...state.style,
+                layout: state.style?.layout || 'single',
+                sidebarWidth: state.style?.sidebarWidth || 30,
+                showPageNumbers: state.style?.showPageNumbers ?? true,
+              }
+            };
+          }
+
+          if (version < 4) {
+            state = {
+              ...state,
+              darkMode: state.darkMode ?? false,
+            };
+          }
+
+          return state;
+        },
+      }
+    ),
+    {
+      partialize: (state) => {
+        const { activeSectionId, ...rest } = state;
+        return rest;
       },
     }
   )
