@@ -17,6 +17,7 @@ interface ResumeState extends ResumeData {
   updateSection: (id: string, section: Partial<ResumeSection>) => void;
   deleteSection: (id: string) => void;
   reorderSections: (sections: ResumeSection[]) => void;
+  setDarkMode: (darkMode: boolean) => void;
   resetResume: () => void;
 }
 
@@ -86,7 +87,11 @@ const DEFAULT_DATA: ResumeData = {
     dividerColor: '#2563eb',
     dividerWidth: 100,
     dividerHeight: 1,
+    layout: 'single',
+    sidebarWidth: 30,
+    showPageNumbers: true,
   },
+  darkMode: false,
 };
 
 export const useResumeStore = create<ResumeState>()(
@@ -158,11 +163,12 @@ export const useResumeStore = create<ResumeState>()(
           activeSectionId: state.activeSectionId === id ? null : state.activeSectionId,
         })),
       reorderSections: (sections) => set({ sections }),
+      setDarkMode: (darkMode) => set({ darkMode }),
       resetResume: () => set({ ...DEFAULT_DATA, activeSectionId: null }),
     }),
     {
       name: 'resume-storage',
-      version: 2,
+      version: 3,
       migrate: (persistedState: any, version: number) => {
         let state = persistedState;
 
@@ -196,6 +202,19 @@ export const useResumeStore = create<ResumeState>()(
               dividerColor: state.style?.dividerColor || state.style?.themeColor || DEFAULT_DATA.style.dividerColor,
               dividerWidth: state.style?.dividerWidth ?? DEFAULT_DATA.style.dividerWidth,
               dividerHeight: state.style?.dividerHeight ?? DEFAULT_DATA.style.dividerHeight,
+            }
+          };
+        }
+
+        if (version < 3) {
+          state = {
+            ...state,
+            style: {
+              ...DEFAULT_DATA.style,
+              ...state.style,
+              layout: state.style?.layout || 'single',
+              sidebarWidth: state.style?.sidebarWidth || 30,
+              showPageNumbers: state.style?.showPageNumbers ?? true,
             }
           };
         }

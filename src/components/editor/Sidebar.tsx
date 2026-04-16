@@ -64,17 +64,17 @@ function SortableItem({ section }: SortableItemProps) {
       style={style}
       className={cn(
         "group flex items-center gap-2 p-2 rounded-md border transition-all cursor-pointer",
-        isActive ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-white hover:border-gray-300",
+        isActive ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-400" : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600",
         !section.visible && "opacity-50",
         isDragging && "z-50 shadow-lg"
       )}
       onClick={() => setActiveSectionId(section.id)}
     >
-      <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing p-1 text-gray-400 hover:text-gray-600">
+      <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing p-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
         <GripVertical className="w-4 h-4" />
       </div>
       
-      <span className="flex-1 text-sm font-medium truncate">
+      <span className="flex-1 text-sm font-medium truncate dark:text-gray-200">
         {section.title || '未命名模块'}
       </span>
 
@@ -134,35 +134,35 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-64 border-r bg-gray-50 flex flex-col h-full print:hidden">
-      <div className="p-4 border-b bg-white">
-        <h2 className="text-sm font-semibold text-gray-900 mb-4">模块管理</h2>
+    <aside className="w-64 border-r bg-gray-50 dark:bg-gray-900 dark:border-gray-700 flex flex-col h-full print:hidden transition-colors duration-200">
+      <div className="p-4 border-b bg-white dark:bg-gray-800 dark:border-gray-700">
+        <h2 className="text-sm font-semibold text-gray-900 dark:text-white mb-4">模块管理</h2>
         
         <div className="space-y-2 mb-4">
           <div 
             className={cn(
               "flex items-center gap-3 p-2 rounded-md border transition-all cursor-pointer",
-              (activeSectionId === null || activeSectionId === undefined) ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-white hover:border-gray-300"
+              (activeSectionId === null || activeSectionId === undefined) ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-400" : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600"
             )}
             onClick={() => setActiveSectionId(null)}
           >
-            <div className="p-1 text-gray-500">
+            <div className="p-1 text-gray-500 dark:text-gray-400">
               <Settings className="w-4 h-4" />
             </div>
-            <span className="text-sm font-medium">全局设置</span>
+            <span className="text-sm font-medium dark:text-gray-200">全局设置</span>
           </div>
 
           <div 
             className={cn(
               "flex items-center gap-3 p-2 rounded-md border transition-all cursor-pointer",
-              String(activeSectionId) === 'profile' ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-white hover:border-gray-300"
+              String(activeSectionId) === 'profile' ? "border-blue-500 bg-blue-50 dark:bg-blue-900/20 dark:border-blue-400" : "border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:border-gray-300 dark:hover:border-gray-600"
             )}
             onClick={() => setActiveSectionId('profile')}
           >
-            <div className="p-1 text-blue-500">
+            <div className="p-1 text-blue-500 dark:text-blue-400">
               <User className="w-4 h-4" />
             </div>
-            <span className="text-sm font-medium">基本信息</span>
+            <span className="text-sm font-medium dark:text-gray-200">基本信息</span>
           </div>
         </div>
 
@@ -185,13 +185,13 @@ export default function Sidebar() {
       </div>
 
       <div className="p-4 flex-1 overflow-y-auto">
-        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">添加模块</h3>
+        <h3 className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-3">添加模块</h3>
         <div className="grid grid-cols-1 gap-2">
           {SECTION_TEMPLATES.map((template) => (
             <button
               key={template.type}
               onClick={() => addSection(template.type, template.title)}
-              className="flex items-center gap-3 p-2 text-sm text-gray-600 hover:bg-white hover:text-blue-600 hover:shadow-sm rounded-md transition-all text-left border border-transparent hover:border-gray-200"
+              className="flex items-center gap-3 p-2 text-sm text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 hover:text-blue-600 dark:hover:text-blue-400 hover:shadow-sm rounded-md transition-all text-left border border-transparent hover:border-gray-200 dark:hover:border-gray-700"
             >
               <template.icon className="w-4 h-4" />
               <span>{template.title}</span>

@@ -20,6 +20,9 @@ export type ResumeStyle = {
   dividerColor: string;
   dividerWidth: number; // percentage 0-100
   dividerHeight: number; // thickness in px
+  layout: 'single' | 'double';
+  sidebarWidth: number; // percentage for double layout
+  showPageNumbers: boolean;
 };
 
 export type ProfileField = {
@@ -46,4 +49,5 @@ export type ResumeData = {
   profile: Profile;
   sections: ResumeSection[];
   style: ResumeStyle;
+  darkMode: boolean;
 };

@@ -1,6 +1,29 @@
 @import "tailwindcss";
 
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
 @layer base {
+  :root {
+    --background: 255 255 255;
+    --foreground: 17 24 39;
+  }
+
+  .dark {
+    --background: 17 24 39;
+    --foreground: 249 250 251;
+  }
+
+  body {
+    @apply bg-white text-gray-900 antialiased transition-colors duration-200;
+  }
+
+  .dark body {
+    @apply bg-gray-900 text-gray-100;
+  }
+
   @media print {
     @page {
       margin: 0;
