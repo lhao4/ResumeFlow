@@ -194,6 +194,17 @@ export const useResumeStore = create<ResumeState>()(
           set((state) => ({
             ...state,
             ...template,
+            meta: template.meta ? { ...state.meta, ...template.meta } : state.meta,
+            profile: template.profile
+              ? {
+                  ...state.profile,
+                  ...template.profile,
+                  fields: template.profile.fields ?? state.profile.fields,
+                }
+              : state.profile,
+            style: template.style ? { ...state.style, ...template.style } : state.style,
+            aiConfig: template.aiConfig ? { ...state.aiConfig, ...template.aiConfig } : state.aiConfig,
+            sections: template.sections ?? state.sections,
             // Ensure we don't overwrite customTemplates when applying a template
             customTemplates: state.customTemplates,
           })),

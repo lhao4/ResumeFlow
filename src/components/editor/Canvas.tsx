@@ -93,10 +93,11 @@ export default function Canvas() {
         <>
           {/* Profile Header */}
           <header 
-            className="mb-6 flex justify-between items-start border-b pb-6 cursor-pointer transition-all"
+            className="mb-6 cursor-pointer transition-all"
             onClick={() => setActiveSectionId('profile')}
           >
-            <div className="flex-1">
+            <div className="flex justify-between items-start pb-6">
+              <div className="flex-1">
               <h1 className="text-3xl font-bold mb-2" style={{ color: style.themeColor }}>
                 {profile.name}
               </h1>
@@ -115,7 +116,7 @@ export default function Canvas() {
               </div>
             </div>
 
-            <div className="flex items-start gap-6">
+              <div className="flex items-start gap-6">
               {websiteField && (
                 <div className="flex flex-col items-center p-1.5 border rounded bg-white shadow-sm">
                   <QRCodeSVG value={websiteField.value} size={60} />
@@ -146,7 +147,16 @@ export default function Canvas() {
                   />
                 </div>
               )}
+              </div>
             </div>
+            <div 
+              style={{ 
+                backgroundColor: style.dividerColor,
+                height: `${style.dividerHeight}px`,
+                width: `${style.dividerWidth}%`,
+                marginTop: '2px'
+              }} 
+            />
           </header>
 
           {/* Sections */}
