@@ -19,17 +19,21 @@ export type ResumeStyle = {
   fontFamily: string;
 };
 
+export type ProfileField = {
+  id: string;
+  label: string;
+  value: string;
+  icon?: string;
+  visible: boolean;
+};
+
 export type Profile = {
   name: string;
   role: string;
-  phone: string;
-  email: string;
   avatar?: string;
   avatarSize: number;
   avatarShape: 'circle' | 'rounded';
-  github?: string;
-  website?: string;
-  location?: string;
+  fields: ProfileField[];
 };
 
 export type ResumeData = {

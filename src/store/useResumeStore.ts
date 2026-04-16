@@ -1,12 +1,16 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
-import { ResumeData, ResumeSection, ResumeStyle, Profile } from '../types';
+import { ResumeData, ResumeSection, ResumeStyle, Profile, ProfileField } from '../types';
 
 interface ResumeState extends ResumeData {
   activeSectionId: string | null;
   setActiveSectionId: (id: string | null) => void;
   updateProfile: (profile: Partial<Profile>) => void;
+  addProfileField: (label: string, value: string, icon?: string) => void;
+  updateProfileField: (id: string, field: Partial<ProfileField>) => void;
+  deleteProfileField: (id: string) => void;
+  reorderProfileFields: (fields: ProfileField[]) => void;
   updateStyle: (style: Partial<ResumeStyle>) => void;
   updateMeta: (meta: Partial<{ title: string }>) => void;
   addSection: (type: string, title: string) => void;
@@ -23,12 +27,14 @@ const DEFAULT_DATA: ResumeData = {
   profile: {
     name: '张三',
     role: '全栈开发工程师',
-    phone: '138-0000-0000',
-    email: 'zhangsan@example.com',
     avatarSize: 80,
     avatarShape: 'circle',
-    github: 'github.com/zhangsan',
-    location: '北京',
+    fields: [
+      { id: uuidv4(), label: '电话', value: '138-0000-0000', icon: 'Phone', visible: true },
+      { id: uuidv4(), label: '邮箱', value: 'zhangsan@example.com', icon: 'Mail', visible: true },
+      { id: uuidv4(), label: '地点', value: '北京', icon: 'MapPin', visible: true },
+      { id: uuidv4(), label: 'GitHub', value: 'github.com/zhangsan', icon: 'Github', visible: true },
+    ],
   },
   sections: [
     {
@@ -88,6 +94,36 @@ export const useResumeStore = create<ResumeState>()(
       setActiveSectionId: (id) => set({ activeSectionId: id }),
       updateProfile: (profile) =>
         set((state) => ({ profile: { ...state.profile, ...profile } })),
+      addProfileField: (label, value, icon) =>
+        set((state) => ({
+          profile: {
+            ...state.profile,
+            fields: [
+              ...state.profile.fields,
+              { id: uuidv4(), label, value, icon, visible: true },
+            ],
+          },
+        })),
+      updateProfileField: (id, updatedField) =>
+        set((state) => ({
+          profile: {
+            ...state.profile,
+            fields: state.profile.fields.map((f) =>
+              f.id === id ? { ...f, ...updatedField } : f
+            ),
+          },
+        })),
+      deleteProfileField: (id) =>
+        set((state) => ({
+          profile: {
+            ...state.profile,
+            fields: state.profile.fields.filter((f) => f.id !== id),
+          },
+        })),
+      reorderProfileFields: (fields) =>
+        set((state) => ({
+          profile: { ...state.profile, fields },
+        })),
       updateStyle: (style) =>
         set((state) => ({ style: { ...state.style, ...style } })),
       updateMeta: (meta) =>

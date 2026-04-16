@@ -1,6 +1,6 @@
 import { useResumeStore } from '../../store/useResumeStore';
 import MarkdownRenderer from '../resume/MarkdownRenderer';
-import { Phone, Mail, Github, Globe, MapPin } from 'lucide-react';
+import * as Icons from 'lucide-react';
 import { cn } from '../../lib/utils';
 
 export default function Canvas() {
@@ -32,36 +32,15 @@ export default function Canvas() {
             <p className="text-lg font-medium text-gray-600 mb-4">{profile.role}</p>
             
             <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-500">
-              {profile.phone && (
-                <div className="flex items-center gap-1">
-                  <Phone className="w-3.5 h-3.5" />
-                  <span>{profile.phone}</span>
-                </div>
-              )}
-              {profile.email && (
-                <div className="flex items-center gap-1">
-                  <Mail className="w-3.5 h-3.5" />
-                  <span>{profile.email}</span>
-                </div>
-              )}
-              {profile.location && (
-                <div className="flex items-center gap-1">
-                  <MapPin className="w-3.5 h-3.5" />
-                  <span>{profile.location}</span>
-                </div>
-              )}
-              {profile.github && (
-                <div className="flex items-center gap-1">
-                  <Github className="w-3.5 h-3.5" />
-                  <span>{profile.github}</span>
-                </div>
-              )}
-              {profile.website && (
-                <div className="flex items-center gap-1">
-                  <Globe className="w-3.5 h-3.5" />
-                  <span>{profile.website}</span>
-                </div>
-              )}
+              {profile.fields.filter(f => f.visible).map((field) => {
+                const IconComponent = (Icons as any)[field.icon || ''] || null;
+                return (
+                  <div key={field.id} className="flex items-center gap-1">
+                    {IconComponent && <IconComponent className="w-3.5 h-3.5" />}
+                    <span>{field.value}</span>
+                  </div>
+                );
+              })}
             </div>
           </div>
 
