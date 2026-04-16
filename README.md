@@ -97,6 +97,39 @@ npm run build
 npm run preview
 ```
 
+## GitHub Pages 部署
+
+项目已适配 GitHub Pages 独立部署，并包含自动发布工作流文件：
+
+```text
+.github/workflows/deploy-pages.yml
+```
+
+默认行为：
+
+- 推送到 `main` 分支后自动触发构建和发布
+- 如果仓库名不是 `yourname.github.io`，构建时会自动使用 `/<仓库名>/` 作为静态资源基础路径
+- 如果仓库名是 `yourname.github.io`，则自动使用根路径 `/`
+
+首次启用时请在 GitHub 仓库中完成以下设置：
+
+1. 打开仓库 `Settings`
+2. 进入 `Pages`
+3. 在 `Build and deployment` 中选择 `Source = GitHub Actions`
+4. 确保默认分支为 `main`
+
+如果你后续绑定了自定义域名，或者希望把站点挂在别的子路径下，可以在构建时提供：
+
+```env
+VITE_BASE_PATH=/your-custom-path/
+```
+
+本地验证生产构建可直接执行：
+
+```bash
+npm run build
+```
+
 ## 使用说明
 
 ### 编辑流程

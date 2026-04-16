@@ -3,10 +3,28 @@ import react from '@vitejs/plugin-react';
 import path from 'path';
 import {defineConfig, loadEnv} from 'vite';
 
+const normalizeBasePath = (value: string) => {
+  if (!value || value === '/') {
+    return '/';
+  }
+
+  const trimmed = value.trim().replace(/^\/+|\/+$/g, '');
+  return trimmed ? `/${trimmed}/` : '/';
+};
+
 export default defineConfig(({mode}) => {
   const env = loadEnv(mode, '.', '');
+  const repositoryName = process.env.GITHUB_REPOSITORY?.split('/')[1] || '';
+  const isUserOrOrgSite = repositoryName.endsWith('.github.io');
+  const inferredGithubPagesBase =
+    process.env.GITHUB_ACTIONS === 'true' && repositoryName && !isUserOrOrgSite
+      ? `/${repositoryName}/`
+      : '/';
+  const base = normalizeBasePath(env.VITE_BASE_PATH || inferredGithubPagesBase);
+
   return {
     plugins: [react(), tailwindcss()],
+    base,
     define: {
       'process.env.GEMINI_API_KEY': JSON.stringify(env.GEMINI_API_KEY || ''),
       'process.env.OPENAI_API_KEY': JSON.stringify(env.OPENAI_API_KEY || ''),
