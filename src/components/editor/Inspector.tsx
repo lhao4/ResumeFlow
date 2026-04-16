@@ -558,6 +558,59 @@ export default function Inspector() {
             </div>
           </section>
 
+          {/* PDF Export Settings */}
+          <section className="pt-4 border-t">
+            <div className="flex items-center gap-2 mb-4 text-sm font-bold text-gray-900 uppercase tracking-wider">
+              <Download className="w-4 h-4" />
+              <span>PDF 导出设置</span>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">页面大小</label>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => updateStyle({ pageSize: 'A4' })}
+                    className={cn(
+                      "flex-1 py-1.5 text-xs border rounded-md transition-colors",
+                      style.pageSize === 'A4' ? "bg-blue-50 border-blue-500 text-blue-600" : "bg-white border-gray-200"
+                    )}
+                  >
+                    A4 (210x297mm)
+                  </button>
+                  <button
+                    onClick={() => updateStyle({ pageSize: 'Letter' })}
+                    className={cn(
+                      "flex-1 py-1.5 text-xs border rounded-md transition-colors",
+                      style.pageSize === 'Letter' ? "bg-blue-50 border-blue-500 text-blue-600" : "bg-white border-gray-200"
+                    )}
+                  >
+                    Letter (8.5x11")
+                  </button>
+                </div>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">页眉文字 (仅打印可见)</label>
+                <input 
+                  type="text" 
+                  value={style.printHeader || ''} 
+                  placeholder="例如：个人简历 - 张三"
+                  onChange={(e) => updateStyle({ printHeader: e.target.value })}
+                  className="w-full px-3 py-2 border rounded-md text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">页脚文字 (仅打印可见)</label>
+                <input 
+                  type="text" 
+                  value={style.printFooter || ''} 
+                  placeholder="例如：联系电话：138-0000-0000"
+                  onChange={(e) => updateStyle({ printFooter: e.target.value })}
+                  className="w-full px-3 py-2 border rounded-md text-sm"
+                />
+              </div>
+            </div>
+          </section>
+
           {/* Data Management */}
           <section className="pt-4 border-t">
             <div className="flex items-center gap-2 mb-4 text-sm font-bold text-gray-900 uppercase tracking-wider">

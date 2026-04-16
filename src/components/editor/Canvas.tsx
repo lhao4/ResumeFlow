@@ -12,8 +12,8 @@ export default function Canvas() {
   const [isOverflowing, setIsOverflowing] = useState(false);
   const [isAutoFitting, setIsAutoFitting] = useState(false);
 
-  // A4 dimensions in pixels at 96 DPI: 210mm x 297mm -> 794px x 1123px
-  const PAGE_HEIGHT_MM = 297;
+  // Page dimensions in pixels at 96 DPI
+  const PAGE_HEIGHT_MM = style.pageSize === 'A4' ? 297 : 279.4; // A4 vs Letter
   const PAGE_HEIGHT_PX = (PAGE_HEIGHT_MM * 96) / 25.4;
 
   useEffect(() => {
@@ -258,6 +258,18 @@ export default function Canvas() {
 
   return (
     <main className="flex-1 overflow-y-auto p-8 flex flex-col items-center print:bg-white print:p-0 print:overflow-visible bg-gray-200">
+      {/* Dynamic Print Styles */}
+      <style>
+        {`
+          @media print {
+            @page {
+              size: ${style.pageSize};
+              margin: 0;
+            }
+          }
+        `}
+      </style>
+
       {/* Page Container */}
       <div className="relative flex flex-col gap-8 print:gap-0">
         {/* Render multiple page backgrounds */}
@@ -265,14 +277,32 @@ export default function Canvas() {
           <div 
             key={i}
             className={cn(
-              "bg-white shadow-2xl w-[210mm] h-[297mm] print:shadow-none print:w-full relative text-gray-900 overflow-hidden",
+              "bg-white shadow-2xl print:shadow-none relative text-gray-900 overflow-hidden",
               style.forceSinglePage && isOverflowing && i === 0 && "border-4 border-red-500/50"
             )}
+            style={{
+              width: style.pageSize === 'A4' ? '210mm' : '215.9mm',
+              height: style.pageSize === 'A4' ? '297mm' : '279.4mm',
+            }}
           >
+            {/* Print Header */}
+            {style.printHeader && (
+              <div className="absolute top-4 left-0 right-0 text-center text-[10px] text-gray-300 print:block">
+                {style.printHeader}
+              </div>
+            )}
+
             {/* Page Number */}
             {style.showPageNumbers && (
               <div className="absolute bottom-4 left-0 right-0 text-center text-[10px] text-gray-300 print:block">
                 {i + 1} / {style.forceSinglePage ? 1 : pageCount}
+              </div>
+            )}
+
+            {/* Print Footer */}
+            {style.printFooter && (
+              <div className="absolute bottom-4 left-10 right-10 text-[10px] text-gray-300 print:block text-right">
+                {style.printFooter}
               </div>
             )}
           </div>
@@ -282,10 +312,13 @@ export default function Canvas() {
         <div 
           ref={contentRef}
           className={cn(
-            "absolute top-0 left-0 w-[210mm] text-gray-900 print:w-full",
-            style.forceSinglePage ? "max-h-[297mm] overflow-hidden" : "h-fit"
+            "absolute top-0 left-0 text-gray-900 print:w-full",
+            style.forceSinglePage ? "max-h-full overflow-hidden" : "h-fit"
           )}
-          style={pageStyle}
+          style={{
+            ...pageStyle,
+            width: style.pageSize === 'A4' ? '210mm' : '215.9mm',
+          }}
         >
           {renderContent()}
         </div>

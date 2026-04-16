@@ -98,6 +98,9 @@ const DEFAULT_DATA: ResumeData = {
     sidebarWidth: 30,
     showPageNumbers: true,
     forceSinglePage: false,
+    pageSize: 'A4',
+    printHeader: '',
+    printFooter: '',
   },
   customTemplates: [],
 };
@@ -213,7 +216,7 @@ export const useResumeStore = create<ResumeState>()(
       }),
       {
         name: 'resume-storage',
-        version: 7,
+        version: 8,
         migrate: (persistedState: any, version: number) => {
           let state = persistedState;
 
@@ -300,6 +303,19 @@ export const useResumeStore = create<ResumeState>()(
             state = {
               ...state,
               customTemplates: state.customTemplates || [],
+            };
+          }
+
+          if (version < 8) {
+            state = {
+              ...state,
+              style: {
+                ...DEFAULT_DATA.style,
+                ...state.style,
+                pageSize: state.style?.pageSize || 'A4',
+                printHeader: state.style?.printHeader || '',
+                printFooter: state.style?.printFooter || '',
+              }
             };
           }
 

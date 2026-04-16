@@ -24,6 +24,9 @@ export type ResumeStyle = {
   sidebarWidth: number; // percentage for double layout
   showPageNumbers: boolean;
   forceSinglePage: boolean;
+  pageSize: 'A4' | 'Letter';
+  printHeader?: string;
+  printFooter?: string;
 };
 
 export type ProfileField = {

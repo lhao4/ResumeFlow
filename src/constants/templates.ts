@@ -21,6 +21,7 @@ export const PRESET_TEMPLATES: { name: string; description: string; data: Partia
         sidebarWidth: 30,
         showPageNumbers: true,
         forceSinglePage: false,
+        pageSize: 'A4',
       },
       profile: {
         avatarSize: 80,
@@ -51,6 +52,7 @@ export const PRESET_TEMPLATES: { name: string; description: string; data: Partia
         sidebarWidth: 30,
         showPageNumbers: true,
         forceSinglePage: false,
+        pageSize: 'A4',
       },
       profile: {
         avatarSize: 0, // No avatar usually
@@ -81,6 +83,7 @@ export const PRESET_TEMPLATES: { name: string; description: string; data: Partia
         sidebarWidth: 28,
         showPageNumbers: true,
         forceSinglePage: false,
+        pageSize: 'A4',
       },
       profile: {
         avatarSize: 100,
@@ -111,6 +114,7 @@ export const PRESET_TEMPLATES: { name: string; description: string; data: Partia
         sidebarWidth: 32,
         showPageNumbers: true,
         forceSinglePage: false,
+        pageSize: 'A4',
       },
       profile: {
         avatarSize: 90,
