@@ -22,6 +22,7 @@ import {
   Trash2, 
   Plus, 
   User, 
+  Settings,
   GraduationCap, 
   Briefcase, 
   Code, 
@@ -137,17 +138,32 @@ export default function Sidebar() {
       <div className="p-4 border-b bg-white">
         <h2 className="text-sm font-semibold text-gray-900 mb-4">模块管理</h2>
         
-        <div 
-          className={cn(
-            "flex items-center gap-3 p-2 rounded-md border transition-all cursor-pointer mb-4",
-            activeSectionId === 'profile' ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-white hover:border-gray-300"
-          )}
-          onClick={() => setActiveSectionId('profile')}
-        >
-          <div className="p-1 text-blue-500">
-            <User className="w-4 h-4" />
+        <div className="space-y-2 mb-4">
+          <div 
+            className={cn(
+              "flex items-center gap-3 p-2 rounded-md border transition-all cursor-pointer",
+              activeSectionId === null ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-white hover:border-gray-300"
+            )}
+            onClick={() => setActiveSectionId(null)}
+          >
+            <div className="p-1 text-gray-500">
+              <Settings className="w-4 h-4" />
+            </div>
+            <span className="text-sm font-medium">全局设置</span>
           </div>
-          <span className="text-sm font-medium">基本信息</span>
+
+          <div 
+            className={cn(
+              "flex items-center gap-3 p-2 rounded-md border transition-all cursor-pointer",
+              activeSectionId === 'profile' ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-white hover:border-gray-300"
+            )}
+            onClick={() => setActiveSectionId('profile')}
+          >
+            <div className="p-1 text-blue-500">
+              <User className="w-4 h-4" />
+            </div>
+            <span className="text-sm font-medium">基本信息</span>
+          </div>
         </div>
 
         <div className="space-y-2">
