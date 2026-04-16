@@ -17,7 +17,6 @@ interface ResumeState extends ResumeData {
   updateSection: (id: string, section: Partial<ResumeSection>) => void;
   deleteSection: (id: string) => void;
   reorderSections: (sections: ResumeSection[]) => void;
-  setDarkMode: (darkMode: boolean) => void;
   resetResume: () => void;
 }
 
@@ -91,7 +90,6 @@ const DEFAULT_DATA: ResumeData = {
     sidebarWidth: 30,
     showPageNumbers: true,
   },
-  darkMode: false,
 };
 
 export const useResumeStore = create<ResumeState>()(
@@ -163,16 +161,15 @@ export const useResumeStore = create<ResumeState>()(
           activeSectionId: state.activeSectionId === id ? null : state.activeSectionId,
         })),
       reorderSections: (sections) => set({ sections }),
-      setDarkMode: (darkMode) => set({ darkMode }),
       resetResume: () => set({ ...DEFAULT_DATA, activeSectionId: null }),
     }),
     {
       name: 'resume-storage',
-      version: 3,
+      version: 4,
       migrate: (persistedState: any, version: number) => {
         let state = persistedState;
 
-        if (version === 0) {
+        if (version < 1) {
           // Migration from old profile structure to new dynamic fields
           const profile = state.profile || {};
           const fields = [];
@@ -216,6 +213,13 @@ export const useResumeStore = create<ResumeState>()(
               sidebarWidth: state.style?.sidebarWidth || 30,
               showPageNumbers: state.style?.showPageNumbers ?? true,
             }
+          };
+        }
+
+        if (version < 4) {
+          state = {
+            ...state,
+            darkMode: state.darkMode ?? false,
           };
         }
 

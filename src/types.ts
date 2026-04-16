@@ -49,5 +49,4 @@ export type ResumeData = {
   profile: Profile;
   sections: ResumeSection[];
   style: ResumeStyle;
-  darkMode: boolean;
 };

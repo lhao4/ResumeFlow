@@ -52,7 +52,7 @@ export default function Canvas() {
   );
 
   return (
-    <main className="flex-1 overflow-y-auto p-8 flex flex-col items-center print:bg-white print:p-0 print:overflow-visible bg-gray-200 transition-colors duration-200">
+    <main className="flex-1 overflow-y-auto p-8 flex flex-col items-center print:bg-white print:p-0 print:overflow-visible bg-gray-200">
       {/* A4 Page Container */}
       <div 
         className="bg-white shadow-2xl w-[210mm] min-h-[297mm] h-fit print:shadow-none print:w-full relative text-gray-900"
