@@ -17,6 +17,9 @@ export type ResumeStyle = {
   lineHeight: number;
   themeColor: string;
   fontFamily: string;
+  dividerColor: string;
+  dividerWidth: number; // percentage 0-100
+  dividerHeight: number; // thickness in px
 };
 
 export type ProfileField = {

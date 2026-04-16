@@ -76,10 +76,18 @@ export default function Canvas() {
                 marginBottom: `${section.spacingBottom}px` 
               }}
             >
-              <div className="flex items-center gap-3 mb-2 border-b pb-1" style={{ borderColor: style.themeColor + '40' }}>
+              <div className="flex flex-col mb-2">
                 <h2 className="text-lg font-bold uppercase tracking-wide" style={{ color: style.themeColor }}>
                   {section.title}
                 </h2>
+                <div 
+                  style={{ 
+                    backgroundColor: style.dividerColor,
+                    height: `${style.dividerHeight}px`,
+                    width: `${style.dividerWidth}%`,
+                    marginTop: '2px'
+                  }} 
+                />
               </div>
               <MarkdownRenderer content={section.markdown} />
             </section>

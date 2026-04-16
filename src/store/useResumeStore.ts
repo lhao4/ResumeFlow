@@ -83,6 +83,9 @@ const DEFAULT_DATA: ResumeData = {
     lineHeight: 1.6,
     themeColor: '#2563eb',
     fontFamily: 'sans-serif',
+    dividerColor: '#2563eb',
+    dividerWidth: 100,
+    dividerHeight: 1,
   },
 };
 
@@ -159,11 +162,13 @@ export const useResumeStore = create<ResumeState>()(
     }),
     {
       name: 'resume-storage',
-      version: 1,
+      version: 2,
       migrate: (persistedState: any, version: number) => {
+        let state = persistedState;
+
         if (version === 0) {
           // Migration from old profile structure to new dynamic fields
-          const profile = persistedState.profile || {};
+          const profile = state.profile || {};
           const fields = [];
           
           if (profile.phone) fields.push({ id: uuidv4(), label: '电话', value: profile.phone, icon: 'Phone', visible: true });
@@ -172,15 +177,30 @@ export const useResumeStore = create<ResumeState>()(
           if (profile.github) fields.push({ id: uuidv4(), label: 'GitHub', value: profile.github, icon: 'Github', visible: true });
           if (profile.website) fields.push({ id: uuidv4(), label: '个人网站', value: profile.website, icon: 'Globe', visible: true });
 
-          return {
-            ...persistedState,
+          state = {
+            ...state,
             profile: {
               ...profile,
               fields: fields.length > 0 ? fields : DEFAULT_DATA.profile.fields,
             },
           };
         }
-        return persistedState;
+
+        if (version < 2) {
+          // Add default divider styles if missing
+          state = {
+            ...state,
+            style: {
+              ...DEFAULT_DATA.style,
+              ...state.style,
+              dividerColor: state.style?.dividerColor || state.style?.themeColor || DEFAULT_DATA.style.dividerColor,
+              dividerWidth: state.style?.dividerWidth ?? DEFAULT_DATA.style.dividerWidth,
+              dividerHeight: state.style?.dividerHeight ?? DEFAULT_DATA.style.dividerHeight,
+            }
+          };
+        }
+
+        return state;
       },
     }
   )

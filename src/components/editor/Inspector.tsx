@@ -257,6 +257,63 @@ export default function Inspector() {
               </div>
             </div>
           </section>
+
+          {/* Divider Settings */}
+          <section>
+            <div className="flex items-center gap-2 mb-4 text-sm font-bold text-gray-900 uppercase tracking-wider">
+              <div className="w-4 h-4 border-b-2 border-gray-900" />
+              <span>分割线设置</span>
+            </div>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">分割线颜色</label>
+                <div className="flex gap-2 flex-wrap">
+                  {['#2563eb', '#1e293b', '#059669', '#dc2626', '#7c3aed', '#ea580c', '#e2e8f0'].map(color => (
+                    <button
+                      key={color}
+                      onClick={() => updateStyle({ dividerColor: color })}
+                      className={cn(
+                        "w-6 h-6 rounded-full border-2 transition-all",
+                        style.dividerColor === color ? "border-black scale-110" : "border-transparent"
+                      )}
+                      style={{ backgroundColor: color }}
+                    />
+                  ))}
+                  <input 
+                    type="color" 
+                    value={style.dividerColor}
+                    onChange={(e) => updateStyle({ dividerColor: e.target.value })}
+                    className="w-6 h-6 p-0 border-none bg-transparent cursor-pointer"
+                  />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">粗细 (px): {style.dividerHeight}</label>
+                  <input 
+                    type="range" 
+                    min="1" 
+                    max="10"
+                    step="0.5"
+                    value={style.dividerHeight} 
+                    onChange={(e) => updateStyle({ dividerHeight: Number(e.target.value) })}
+                    className="w-full"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-gray-500 mb-1">长度 (%): {style.dividerWidth}</label>
+                  <input 
+                    type="range" 
+                    min="1" 
+                    max="100"
+                    value={style.dividerWidth} 
+                    onChange={(e) => updateStyle({ dividerWidth: Number(e.target.value) })}
+                    className="w-full"
+                  />
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </aside>
     );
