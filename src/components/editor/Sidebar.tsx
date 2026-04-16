@@ -63,8 +63,7 @@ function SortableItem({ section }: SortableItemProps) {
       ref={setNodeRef}
       style={style}
       className={cn(
-        "group flex items-center gap-2 p-2 rounded-md border transition-all cursor-pointer",
-        isActive ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-white hover:border-gray-300",
+        "group flex items-center gap-2 p-2 rounded-md border transition-all cursor-pointer border-gray-200 bg-white hover:border-gray-300",
         !section.visible && "opacity-50",
         isDragging && "z-50 shadow-lg"
       )}
@@ -140,10 +139,7 @@ export default function Sidebar() {
         
         <div className="space-y-2 mb-4">
           <div 
-            className={cn(
-              "flex items-center gap-3 p-2 rounded-md border transition-all cursor-pointer",
-              (activeSectionId === null || activeSectionId === undefined) ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-white hover:border-gray-300"
-            )}
+            className="flex items-center gap-3 p-2 rounded-md border transition-all cursor-pointer border-gray-200 bg-white hover:border-gray-300"
             onClick={() => setActiveSectionId(null)}
           >
             <div className="p-1 text-gray-500">
@@ -153,10 +149,7 @@ export default function Sidebar() {
           </div>
 
           <div 
-            className={cn(
-              "flex items-center gap-3 p-2 rounded-md border transition-all cursor-pointer",
-              String(activeSectionId) === 'profile' ? "border-blue-500 bg-blue-50" : "border-gray-200 bg-white hover:border-gray-300"
-            )}
+            className="flex items-center gap-3 p-2 rounded-md border transition-all cursor-pointer border-gray-200 bg-white hover:border-gray-300"
             onClick={() => setActiveSectionId('profile')}
           >
             <div className="p-1 text-blue-500">

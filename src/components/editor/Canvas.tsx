@@ -62,11 +62,7 @@ export default function Canvas() {
           <>
             {/* Profile Header */}
             <header 
-              className={cn(
-                "mb-6 flex justify-between items-start border-b pb-6 cursor-pointer transition-all border-2 border-transparent hover:border-blue-500/30",
-                activeSectionId === 'profile' && "border-blue-500 bg-blue-50/30"
-              )} 
-              style={{ borderColor: activeSectionId === 'profile' ? undefined : style.themeColor + '20' }}
+              className="mb-6 flex justify-between items-start border-b pb-6 cursor-pointer transition-all"
               onClick={() => setActiveSectionId('profile')}
             >
               <div className="flex-1">
@@ -124,10 +120,7 @@ export default function Canvas() {
               {visibleSections.map(section => (
                 <div 
                   key={section.id}
-                  className={cn(
-                    "group relative p-4 rounded-lg transition-all cursor-pointer border-2 border-transparent hover:border-blue-500/30",
-                    activeSectionId === section.id && "border-blue-500 bg-blue-50/30"
-                  )}
+                  className="group relative p-4 transition-all cursor-pointer"
                   onClick={() => setActiveSectionId(section.id)}
                 >
                   {renderSection(section)}
@@ -140,10 +133,7 @@ export default function Canvas() {
             {/* Sidebar */}
             <aside style={{ width: `${style.sidebarWidth}%` }} className="flex-shrink-0">
               <div 
-                className={cn(
-                  "p-4 rounded-lg transition-all cursor-pointer border-2 border-transparent hover:border-blue-500/30 mb-6",
-                  activeSectionId === 'profile' && "border-blue-500 bg-blue-50/30"
-                )}
+                className="p-4 transition-all cursor-pointer mb-6"
                 onClick={() => setActiveSectionId('profile')}
               >
                 {profile.avatar && (
@@ -200,10 +190,7 @@ export default function Canvas() {
                 {sidebarSections.map(section => (
                   <div 
                     key={section.id}
-                    className={cn(
-                      "p-4 rounded-lg transition-all cursor-pointer border-2 border-transparent hover:border-blue-500/30",
-                      activeSectionId === section.id && "border-blue-500 bg-blue-50/30"
-                    )}
+                    className="p-4 transition-all cursor-pointer"
                     onClick={() => setActiveSectionId(section.id)}
                   >
                     {renderSection(section)}
@@ -218,10 +205,7 @@ export default function Canvas() {
                 {mainSections.map(section => (
                   <div 
                     key={section.id}
-                    className={cn(
-                      "p-4 rounded-lg transition-all cursor-pointer border-2 border-transparent hover:border-blue-500/30",
-                      activeSectionId === section.id && "border-blue-500 bg-blue-50/30"
-                    )}
+                    className="p-4 transition-all cursor-pointer"
                     onClick={() => setActiveSectionId(section.id)}
                   >
                     {renderSection(section)}
