@@ -121,6 +121,7 @@ export default function Inspector() {
     reorderProfileFields,
     style,
     updateStyle,
+    smartFitSpacing,
     resetResume
   } = useResumeStore();
 
@@ -358,6 +359,15 @@ export default function Inspector() {
                 />
                 <label htmlFor="forceSinglePage" className="text-xs text-gray-500">强制一页排版</label>
               </div>
+              {style.forceSinglePage && (
+                <button
+                  onClick={() => smartFitSpacing()}
+                  className="w-full mt-2 py-1.5 border border-blue-200 text-blue-600 rounded-md text-[10px] font-bold hover:bg-blue-50 transition-colors flex items-center justify-center gap-2"
+                >
+                  <Sparkles className="w-3 h-3" />
+                  智能压缩模块间距
+                </button>
+              )}
             </div>
           </section>
 

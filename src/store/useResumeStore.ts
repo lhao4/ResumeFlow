@@ -18,6 +18,7 @@ interface ResumeState extends ResumeData {
   updateSection: (id: string, section: Partial<ResumeSection>) => void;
   deleteSection: (id: string) => void;
   reorderSections: (sections: ResumeSection[]) => void;
+  smartFitSpacing: () => void;
   resetResume: () => void;
 }
 
@@ -164,6 +165,14 @@ export const useResumeStore = create<ResumeState>()(
             activeSectionId: state.activeSectionId === id ? null : state.activeSectionId,
           })),
         reorderSections: (sections) => set({ sections }),
+        smartFitSpacing: () =>
+          set((state) => ({
+            sections: state.sections.map((s) => ({
+              ...s,
+              spacingTop: Math.max(0, s.spacingTop - 1),
+              spacingBottom: Math.max(0, s.spacingBottom - 1),
+            })),
+          })),
         resetResume: () => set({ ...DEFAULT_DATA, activeSectionId: null }),
       }),
       {

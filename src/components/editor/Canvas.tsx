@@ -6,13 +6,13 @@ import { QRCodeSVG } from 'qrcode.react';
 import { useEffect, useRef, useState } from 'react';
 
 export default function Canvas() {
-  const { profile, sections, style, activeSectionId, setActiveSectionId } = useResumeStore();
+  const { profile, sections, style, activeSectionId, setActiveSectionId, smartFitSpacing } = useResumeStore();
   const contentRef = useRef<HTMLDivElement>(null);
   const [pageCount, setPageCount] = useState(1);
   const [isOverflowing, setIsOverflowing] = useState(false);
+  const [isAutoFitting, setIsAutoFitting] = useState(false);
 
   // A4 dimensions in pixels at 96 DPI: 210mm x 297mm -> 794px x 1123px
-  // We'll use mm for precision in CSS
   const PAGE_HEIGHT_MM = 297;
   const PAGE_HEIGHT_PX = (PAGE_HEIGHT_MM * 96) / 25.4;
 
@@ -24,6 +24,24 @@ export default function Canvas() {
       setIsOverflowing(height > PAGE_HEIGHT_PX);
     }
   }, [sections, profile, style, PAGE_HEIGHT_PX]);
+
+  // Automatic spacing reduction logic
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (style.forceSinglePage && isOverflowing && isAutoFitting) {
+      const hasSpacing = sections.some(s => s.spacingTop > 0 || s.spacingBottom > 0);
+      if (hasSpacing) {
+        timer = setTimeout(() => {
+          smartFitSpacing();
+        }, 50); // Small delay for visual "step by step" effect
+      } else {
+        setIsAutoFitting(false);
+      }
+    } else if (!isOverflowing) {
+      setIsAutoFitting(false);
+    }
+    return () => clearTimeout(timer);
+  }, [style.forceSinglePage, isOverflowing, isAutoFitting, sections, smartFitSpacing]);
 
   const pageStyle = {
     paddingTop: `${style.marginTop}px`,
@@ -268,9 +286,19 @@ export default function Canvas() {
 
         {/* Overflow Warning */}
         {style.forceSinglePage && isOverflowing && (
-          <div className="absolute -top-10 left-0 right-0 bg-red-500 text-white text-[10px] py-1 px-3 rounded-t-md font-bold flex items-center justify-center gap-2 animate-pulse print:hidden">
-            <Icons.AlertTriangle className="w-3 h-3" />
-            内容已超过一页限制，部分内容将被截断。请调整字数或间距。
+          <div className="absolute -top-12 left-0 right-0 bg-red-500 text-white text-[10px] py-1.5 px-3 rounded-t-md font-bold flex items-center justify-between gap-2 animate-pulse print:hidden">
+            <div className="flex items-center gap-2">
+              <Icons.AlertTriangle className="w-3 h-3" />
+              <span>内容已超过一页限制，部分内容将被截断。</span>
+            </div>
+            <button 
+              onClick={() => setIsAutoFitting(true)}
+              disabled={isAutoFitting}
+              className="bg-white text-red-600 px-2 py-0.5 rounded text-[9px] hover:bg-gray-100 transition-colors flex items-center gap-1 disabled:opacity-50"
+            >
+              <Icons.Sparkles className="w-2.5 h-2.5" />
+              {isAutoFitting ? "正在压缩..." : "智能压缩间距"}
+            </button>
           </div>
         )}
       </div>
