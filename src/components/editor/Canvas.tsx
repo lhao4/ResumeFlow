@@ -126,13 +126,13 @@ export default function Canvas() {
               {profile.avatar && (
                 <div 
                   className={cn(
-                    "overflow-hidden border-2 bg-gray-50 flex-shrink-0",
+                    "overflow-hidden bg-gray-50 flex-shrink-0 relative",
                     profile.avatarShape === 'circle' ? "rounded-full" : profile.avatarShape === 'rounded' ? "rounded-lg" : "rounded-none"
                   )}
                   style={{ 
                     width: `${profile.avatarSize}px`, 
                     height: profile.avatarShape === 'rectangle' ? `${profile.avatarSize * 1.33}px` : `${profile.avatarSize}px`,
-                    borderColor: style.themeColor + '40'
+                    transform: `translate(${profile.avatarX}px, ${profile.avatarY}px)`,
                   }}
                 >
                   <img 
@@ -140,7 +140,7 @@ export default function Canvas() {
                     alt={profile.name} 
                     className="w-full h-full object-cover origin-center"
                     style={{
-                      transform: `scale(${profile.avatarScale}) translate(${profile.avatarX}px, ${profile.avatarY}px)`
+                      transform: `scale(${profile.avatarScale})`
                     }}
                     referrerPolicy="no-referrer"
                   />
@@ -176,13 +176,13 @@ export default function Canvas() {
             {profile.avatar && (
               <div 
                 className={cn(
-                  "overflow-hidden border-2 bg-gray-50 mb-6 mx-auto",
+                  "overflow-hidden bg-gray-50 mb-6 mx-auto relative",
                   profile.avatarShape === 'circle' ? "rounded-full" : profile.avatarShape === 'rounded' ? "rounded-lg" : "rounded-none"
                 )}
                 style={{ 
                   width: `${profile.avatarSize}px`, 
                   height: profile.avatarShape === 'rectangle' ? `${profile.avatarSize * 1.33}px` : `${profile.avatarSize}px`,
-                  borderColor: style.themeColor + '40'
+                  transform: `translate(${profile.avatarX}px, ${profile.avatarY}px)`,
                 }}
               >
                 <img 
@@ -190,7 +190,7 @@ export default function Canvas() {
                   alt={profile.name} 
                   className="w-full h-full object-cover origin-center"
                   style={{
-                    transform: `scale(${profile.avatarScale}) translate(${profile.avatarX}px, ${profile.avatarY}px)`
+                    transform: `scale(${profile.avatarScale})`
                   }}
                   referrerPolicy="no-referrer"
                 />

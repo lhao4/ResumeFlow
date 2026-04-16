@@ -639,22 +639,22 @@ export default function Inspector() {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1">水平移动: {profile.avatarX}px</label>
+                    <label className="block text-xs text-gray-500 mb-1">整体水平移动: {profile.avatarX}px</label>
                     <input 
                       type="range" 
-                      min="-100" 
-                      max="100"
+                      min="-200" 
+                      max="200"
                       value={profile.avatarX} 
                       onChange={(e) => updateProfile({ avatarX: Number(e.target.value) })}
                       className="w-full"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs text-gray-500 mb-1 font-medium">垂直移动: {profile.avatarY}px</label>
+                    <label className="block text-xs text-gray-500 mb-1 font-medium">整体垂直移动: {profile.avatarY}px</label>
                     <input 
                       type="range" 
-                      min="-100" 
-                      max="100"
+                      min="-200" 
+                      max="200"
                       value={profile.avatarY} 
                       onChange={(e) => updateProfile({ avatarY: Number(e.target.value) })}
                       className="w-full"
