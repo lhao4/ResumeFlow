@@ -46,23 +46,23 @@ function SortableProfileField({ field }: SortableProfileFieldProps) {
       ref={setNodeRef}
       style={style}
       className={cn(
-        "flex flex-col gap-2 p-3 rounded-md border bg-gray-50 transition-all",
+        "flex flex-col gap-2 p-3 rounded-md border bg-gray-50 transition-all overflow-hidden",
         !field.visible && "opacity-50",
         isDragging && "z-50 shadow-lg"
       )}
     >
-      <div className="flex items-center gap-2">
-        <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing p-1 text-gray-400 hover:text-gray-600">
+      <div className="flex items-center gap-2 min-w-0">
+        <div {...attributes} {...listeners} className="cursor-grab active:cursor-grabbing p-1 text-gray-400 hover:text-gray-600 flex-shrink-0">
           <GripVertical className="w-4 h-4" />
         </div>
         <input 
           type="text" 
           value={field.label} 
           onChange={(e) => updateProfileField(field.id, { label: e.target.value })}
-          placeholder="标签 (如: 电话)"
-          className="flex-1 bg-transparent border-none text-xs font-bold uppercase tracking-wider focus:ring-0 p-0"
+          placeholder="标签"
+          className="flex-1 min-w-0 bg-transparent border-none text-xs font-bold uppercase tracking-wider focus:ring-0 p-0"
         />
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 flex-shrink-0">
           <button
             onClick={() => updateProfileField(field.id, { visible: !field.visible })}
             className="p-1 text-gray-400 hover:text-blue-500 rounded"
@@ -78,11 +78,11 @@ function SortableProfileField({ field }: SortableProfileFieldProps) {
         </div>
       </div>
       
-      <div className="flex gap-2">
+      <div className="flex gap-2 min-w-0">
         <select
           value={field.icon || ''}
           onChange={(e) => updateProfileField(field.id, { icon: e.target.value })}
-          className="text-xs border rounded px-1 py-1 bg-white w-24"
+          className="text-xs border rounded px-1 py-1 bg-white w-20 flex-shrink-0"
         >
           <option value="">无图标</option>
           <option value="Phone">电话</option>
@@ -99,7 +99,7 @@ function SortableProfileField({ field }: SortableProfileFieldProps) {
           value={field.value} 
           onChange={(e) => updateProfileField(field.id, { value: e.target.value })}
           placeholder="内容"
-          className="flex-1 px-2 py-1 border rounded text-sm bg-white"
+          className="flex-1 min-w-0 px-2 py-1 border rounded text-sm bg-white"
         />
       </div>
     </div>
