@@ -348,6 +348,16 @@ export default function Inspector() {
                 />
                 <label htmlFor="showPageNumbers" className="text-xs text-gray-500">显示页码</label>
               </div>
+              <div className="flex items-center gap-2">
+                <input 
+                  type="checkbox" 
+                  id="forceSinglePage"
+                  checked={style.forceSinglePage}
+                  onChange={(e) => updateStyle({ forceSinglePage: e.target.checked })}
+                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <label htmlFor="forceSinglePage" className="text-xs text-gray-500">强制一页排版</label>
+              </div>
             </div>
           </section>
 

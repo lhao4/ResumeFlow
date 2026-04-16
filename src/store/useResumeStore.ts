@@ -90,6 +90,7 @@ const DEFAULT_DATA: ResumeData = {
     layout: 'single',
     sidebarWidth: 30,
     showPageNumbers: true,
+    forceSinglePage: false,
   },
 };
 
@@ -167,7 +168,7 @@ export const useResumeStore = create<ResumeState>()(
       }),
       {
         name: 'resume-storage',
-        version: 4,
+        version: 5,
         migrate: (persistedState: any, version: number) => {
           let state = persistedState;
 
@@ -222,6 +223,17 @@ export const useResumeStore = create<ResumeState>()(
             state = {
               ...state,
               darkMode: state.darkMode ?? false,
+            };
+          }
+
+          if (version < 5) {
+            state = {
+              ...state,
+              style: {
+                ...DEFAULT_DATA.style,
+                ...state.style,
+                forceSinglePage: state.style?.forceSinglePage ?? false,
+              }
             };
           }
 

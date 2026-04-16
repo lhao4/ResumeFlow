@@ -23,6 +23,7 @@ export type ResumeStyle = {
   layout: 'single' | 'double';
   sidebarWidth: number; // percentage for double layout
   showPageNumbers: boolean;
+  forceSinglePage: boolean;
 };
 
 export type ProfileField = {
