@@ -1068,11 +1068,29 @@ export default function Inspector() {
               />
             </div>
             <div>
+              <label className="block text-xs text-gray-500 mb-1">右间距 (px)</label>
+              <input 
+                type="number" 
+                value={activeSection.spacingRight ?? 0} 
+                onChange={(e) => updateSection(activeSection.id, { spacingRight: Number(e.target.value) })}
+                className="w-full px-3 py-2 border rounded-md text-sm"
+              />
+            </div>
+            <div>
               <label className="block text-xs text-gray-500 mb-1">下间距 (px)</label>
               <input 
                 type="number" 
                 value={activeSection.spacingBottom} 
                 onChange={(e) => updateSection(activeSection.id, { spacingBottom: Number(e.target.value) })}
+                className="w-full px-3 py-2 border rounded-md text-sm"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-gray-500 mb-1">左间距 (px)</label>
+              <input 
+                type="number" 
+                value={activeSection.spacingLeft ?? 0} 
+                onChange={(e) => updateSection(activeSection.id, { spacingLeft: Number(e.target.value) })}
                 className="w-full px-3 py-2 border rounded-md text-sm"
               />
             </div>

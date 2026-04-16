@@ -29,7 +29,7 @@ export default function Canvas() {
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (style.forceSinglePage && isOverflowing && isAutoFitting) {
-      const hasSpacing = sections.some(s => s.spacingTop > 0 || s.spacingBottom > 0);
+      const hasSpacing = sections.some(s => s.spacingTop > 0 || (s.spacingRight ?? 0) > 0 || s.spacingBottom > 0 || (s.spacingLeft ?? 0) > 0);
       if (hasSpacing) {
         timer = setTimeout(() => {
           smartFitSpacing();
@@ -67,7 +67,9 @@ export default function Canvas() {
       key={section.id} 
       style={{ 
         marginTop: `${section.spacingTop}px`, 
-        marginBottom: `${section.spacingBottom}px` 
+        marginRight: `${section.spacingRight ?? 0}px`, 
+        marginBottom: `${section.spacingBottom}px`, 
+        marginLeft: `${section.spacingLeft ?? 0}px` 
       }}
     >
       <div className="flex flex-col mb-2">

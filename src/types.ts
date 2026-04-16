@@ -5,7 +5,9 @@ export type ResumeSection = {
   markdown: string;
   visible: boolean;
   spacingTop: number;
+  spacingRight: number;
   spacingBottom: number;
+  spacingLeft: number;
 };
 
 export type ResumeStyle = {

@@ -53,7 +53,9 @@ const DEFAULT_DATA: ResumeData = {
       markdown: '### 北京大学\n**计算机科学与技术** | 本科 | 2018.09 - 2022.06\n- 主修课程：数据结构、算法分析、操作系统、计算机网络、数据库系统等。\n- 荣誉奖项：国家奖学金（前1%）、校优秀毕业生。',
       visible: true,
       spacingTop: 10,
+      spacingRight: 0,
       spacingBottom: 10,
+      spacingLeft: 0,
     },
     {
       id: uuidv4(),
@@ -62,7 +64,9 @@ const DEFAULT_DATA: ResumeData = {
       markdown: '### 某互联网大厂\n**高级前端工程师** | 2022.07 - 至今\n- 负责核心业务线的研发工作，支撑日活千万级用户。\n- 主导了前端架构升级，将首屏加载速度提升了 40%。\n- 沉淀了多套通用组件库，并在全公司范围内推广使用。',
       visible: true,
       spacingTop: 10,
+      spacingRight: 0,
       spacingBottom: 10,
+      spacingLeft: 0,
     },
     {
       id: uuidv4(),
@@ -71,7 +75,9 @@ const DEFAULT_DATA: ResumeData = {
       markdown: '### 个人开源项目：Markdown 简历编辑器\n**核心开发者** | 2023.01 - 2023.03\n- 使用 React + TypeScript + Tailwind CSS 开发。\n- 实现了模块化编辑、实时预览、PDF 导出等核心功能。\n- GitHub Star 数突破 1k+，获得社区广泛好评。',
       visible: true,
       spacingTop: 10,
+      spacingRight: 0,
       spacingBottom: 10,
+      spacingLeft: 0,
     },
     {
       id: uuidv4(),
@@ -80,7 +86,9 @@ const DEFAULT_DATA: ResumeData = {
       markdown: '- **前端**：React, Vue, TypeScript, Next.js, Tailwind CSS\n- **后端**：Node.js, Go, MySQL, Redis\n- **工具**：Git, Docker, Webpack, Vite',
       visible: true,
       spacingTop: 10,
+      spacingRight: 0,
       spacingBottom: 10,
+      spacingLeft: 0,
     },
   ],
   style: {
@@ -166,7 +174,9 @@ export const useResumeStore = create<ResumeState>()(
                 markdown: '',
                 visible: true,
                 spacingTop: 10,
+                spacingRight: 0,
                 spacingBottom: 10,
+                spacingLeft: 0,
               },
             ],
           })),
@@ -187,7 +197,9 @@ export const useResumeStore = create<ResumeState>()(
             sections: state.sections.map((s) => ({
               ...s,
               spacingTop: Math.max(0, s.spacingTop - 1),
+              spacingRight: Math.max(0, (s.spacingRight ?? 0) - 1),
               spacingBottom: Math.max(0, s.spacingBottom - 1),
+              spacingLeft: Math.max(0, (s.spacingLeft ?? 0) - 1),
             })),
           })),
         applyTemplate: (template) =>
@@ -236,7 +248,7 @@ export const useResumeStore = create<ResumeState>()(
       }),
       {
         name: 'resume-storage',
-        version: 9,
+        version: 10,
         migrate: (persistedState: any, version: number) => {
           let state = persistedState;
 
@@ -347,6 +359,19 @@ export const useResumeStore = create<ResumeState>()(
                 ...(state.aiConfig || {}),
                 apiKey: state.aiConfig?.apiKey || state.apiKey || '',
               },
+            };
+          }
+
+          if (version < 10) {
+            state = {
+              ...state,
+              sections: (state.sections || DEFAULT_DATA.sections).map((section: ResumeSection) => ({
+                ...section,
+                spacingTop: section.spacingTop ?? 10,
+                spacingRight: section.spacingRight ?? 0,
+                spacingBottom: section.spacingBottom ?? 10,
+                spacingLeft: section.spacingLeft ?? 0,
+              })),
             };
           }
 
