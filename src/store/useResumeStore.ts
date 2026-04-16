@@ -19,6 +19,9 @@ interface ResumeState extends ResumeData {
   deleteSection: (id: string) => void;
   reorderSections: (sections: ResumeSection[]) => void;
   smartFitSpacing: () => void;
+  applyTemplate: (template: Partial<ResumeData>) => void;
+  addCustomTemplate: (name: string) => void;
+  deleteCustomTemplate: (id: string) => void;
   resetResume: () => void;
 }
 
@@ -96,6 +99,7 @@ const DEFAULT_DATA: ResumeData = {
     showPageNumbers: true,
     forceSinglePage: false,
   },
+  customTemplates: [],
 };
 
 export const useResumeStore = create<ResumeState>()(
@@ -176,11 +180,40 @@ export const useResumeStore = create<ResumeState>()(
               spacingBottom: Math.max(0, s.spacingBottom - 1),
             })),
           })),
+        applyTemplate: (template) =>
+          set((state) => ({
+            ...state,
+            ...template,
+            // Ensure we don't overwrite customTemplates when applying a template
+            customTemplates: state.customTemplates,
+          })),
+        addCustomTemplate: (name) =>
+          set((state) => ({
+            customTemplates: [
+              ...state.customTemplates,
+              {
+                id: uuidv4(),
+                name,
+                style: state.style,
+                profile: {
+                  avatarSize: state.profile.avatarSize,
+                  avatarShape: state.profile.avatarShape,
+                  avatarScale: state.profile.avatarScale,
+                  avatarX: state.profile.avatarX,
+                  avatarY: state.profile.avatarY,
+                },
+              },
+            ],
+          })),
+        deleteCustomTemplate: (id) =>
+          set((state) => ({
+            customTemplates: state.customTemplates.filter((t) => t.id !== id),
+          })),
         resetResume: () => set({ ...DEFAULT_DATA, activeSectionId: null }),
       }),
       {
         name: 'resume-storage',
-        version: 6,
+        version: 7,
         migrate: (persistedState: any, version: number) => {
           let state = persistedState;
 
@@ -260,6 +293,13 @@ export const useResumeStore = create<ResumeState>()(
                 avatarY: state.profile?.avatarY ?? 0,
                 avatarShape: state.profile?.avatarShape ?? 'circle',
               }
+            };
+          }
+
+          if (version < 7) {
+            state = {
+              ...state,
+              customTemplates: state.customTemplates || [],
             };
           }
 

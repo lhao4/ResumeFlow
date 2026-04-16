@@ -46,6 +46,13 @@ export type Profile = {
   fields: ProfileField[];
 };
 
+export type Template = {
+  id: string;
+  name: string;
+  style: ResumeStyle;
+  profile: Partial<Profile>;
+};
+
 export type ResumeData = {
   meta: {
     title: string;
@@ -53,4 +60,5 @@ export type ResumeData = {
   profile: Profile;
   sections: ResumeSection[];
   style: ResumeStyle;
+  customTemplates: Template[];
 };

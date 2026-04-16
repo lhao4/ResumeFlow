@@ -16,7 +16,7 @@ import {
 } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { useResumeStore } from '../../store/useResumeStore';
-import { Settings, Type, Layout, Image as ImageIcon, Trash2, GripVertical, Eye, EyeOff, Plus, Sparkles, Download, Upload, Columns, Square, Move, Maximize, Crop } from 'lucide-react';
+import { Settings, Type, Layout, Image as ImageIcon, Trash2, GripVertical, Eye, EyeOff, Plus, Sparkles, Download, Upload, Columns, Square, Move, Maximize, Crop, Palette, Bookmark, Check } from 'lucide-react';
 import { cn } from '../../lib/utils';
 import { ProfileField } from '../../types';
 import { polishContent, analyzeJD } from '../../services/aiService';
@@ -24,6 +24,7 @@ import { getCroppedImg } from '../../lib/imageUtils';
 import { useState, useCallback } from 'react';
 import MarkdownRenderer from '../resume/MarkdownRenderer';
 import Cropper from 'react-easy-crop';
+import { PRESET_TEMPLATES } from '../../constants/templates';
 
 interface SortableProfileFieldProps {
   field: ProfileField;
@@ -124,13 +125,19 @@ export default function Inspector() {
     style,
     updateStyle,
     smartFitSpacing,
-    resetResume
+    resetResume,
+    customTemplates,
+    addCustomTemplate,
+    deleteCustomTemplate,
+    applyTemplate
   } = useResumeStore();
 
   const [isPolishing, setIsPolishing] = useState(false);
   const [jdText, setJdText] = useState('');
   const [jdAnalysis, setJdAnalysis] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [newTemplateName, setNewTemplateName] = useState('');
+  const [showTemplateInput, setShowTemplateInput] = useState(false);
 
   // Avatar Cropping State
   const [crop, setCrop] = useState({ x: 0, y: 0 });
@@ -236,6 +243,97 @@ export default function Inspector() {
   if (!activeSectionId) {
     return (
       <aside className="w-80 border-l bg-white flex flex-col h-full overflow-y-auto p-6 print:hidden">
+        {/* Template Library */}
+        <section className="mb-8 pb-8 border-b">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-2 text-sm font-bold text-gray-900 uppercase tracking-wider">
+              <Palette className="w-4 h-4" />
+              <span>模板库</span>
+            </div>
+            <button
+              onClick={() => setShowTemplateInput(!showTemplateInput)}
+              className="p-1 text-blue-600 hover:bg-blue-50 rounded"
+              title="保存当前样式为模板"
+            >
+              <Bookmark className="w-4 h-4" />
+            </button>
+          </div>
+
+          {showTemplateInput && (
+            <div className="mb-4 p-3 bg-blue-50 rounded-md border border-blue-100">
+              <input
+                type="text"
+                value={newTemplateName}
+                onChange={(e) => setNewTemplateName(e.target.value)}
+                placeholder="输入模板名称..."
+                className="w-full px-2 py-1.5 text-xs border rounded mb-2"
+              />
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    if (newTemplateName) {
+                      addCustomTemplate(newTemplateName);
+                      setNewTemplateName('');
+                      setShowTemplateInput(false);
+                    }
+                  }}
+                  className="flex-1 py-1 bg-blue-600 text-white text-[10px] rounded"
+                >
+                  保存
+                </button>
+                <button
+                  onClick={() => setShowTemplateInput(false)}
+                  className="flex-1 py-1 bg-gray-200 text-gray-600 text-[10px] rounded"
+                >
+                  取消
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className="space-y-6">
+            <div>
+              <h4 className="text-[10px] font-bold text-gray-400 uppercase mb-2">预设模板</h4>
+              <div className="grid grid-cols-1 gap-2">
+                {PRESET_TEMPLATES.map((tpl) => (
+                  <button
+                    key={tpl.name}
+                    onClick={() => applyTemplate(tpl.data)}
+                    className="group relative flex flex-col p-2 border rounded-md hover:border-blue-500 hover:bg-blue-50 transition-all text-left"
+                  >
+                    <span className="text-xs font-bold text-gray-700 group-hover:text-blue-700">{tpl.name}</span>
+                    <span className="text-[10px] text-gray-400 line-clamp-1">{tpl.description}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {customTemplates.length > 0 && (
+              <div>
+                <h4 className="text-[10px] font-bold text-gray-400 uppercase mb-2">我的模板</h4>
+                <div className="grid grid-cols-1 gap-2">
+                  {customTemplates.map((tpl) => (
+                    <div key={tpl.id} className="group relative flex items-center gap-2">
+                      <button
+                        onClick={() => applyTemplate({ style: tpl.style, profile: tpl.profile as any })}
+                        className="flex-1 p-2 border rounded-md hover:border-blue-500 hover:bg-blue-50 transition-all text-left"
+                      >
+                        <span className="text-xs font-bold text-gray-700">{tpl.name}</span>
+                      </button>
+                      <button
+                        onClick={() => deleteCustomTemplate(tpl.id)}
+                        className="p-1.5 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </section>
+
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-2 text-gray-400">
             <Settings className="w-5 h-5" />
