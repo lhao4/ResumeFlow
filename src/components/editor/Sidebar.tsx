@@ -134,62 +134,72 @@ export default function Sidebar() {
 
   return (
     <aside className="w-64 border-r bg-gray-50 flex flex-col h-full print:hidden">
-      <div className="p-4 border-b bg-white">
-        <h2 className="text-sm font-semibold text-gray-900 mb-4">模块管理</h2>
-        
-        <div className="space-y-2 mb-4">
-          <div 
-            className="flex items-center gap-3 p-2 rounded-md border transition-all cursor-pointer border-gray-200 bg-white hover:border-gray-300"
-            onClick={() => setActiveSectionId(null)}
-          >
-            <div className="p-1 text-gray-500">
-              <Settings className="w-4 h-4" />
-            </div>
-            <span className="text-sm font-medium">全局设置</span>
-          </div>
-
-          <div 
-            className="flex items-center gap-3 p-2 rounded-md border transition-all cursor-pointer border-gray-200 bg-white hover:border-gray-300"
-            onClick={() => setActiveSectionId('profile')}
-          >
-            <div className="p-1 text-blue-500">
-              <User className="w-4 h-4" />
-            </div>
-            <span className="text-sm font-medium">基本信息</span>
-          </div>
+      {/* Module Management Section */}
+      <div className="flex-1 flex flex-col min-h-0 border-b bg-white">
+        <div className="p-4 flex-shrink-0">
+          <h2 className="text-sm font-semibold text-gray-900">模块管理</h2>
         </div>
-
-        <div className="space-y-2">
-          <DndContext
-            sensors={sensors}
-            collisionDetection={closestCenter}
-            onDragEnd={handleDragEnd}
-          >
-            <SortableContext
-              items={sections.map((s) => s.id)}
-              strategy={verticalListSortingStrategy}
+        
+        <div className="flex-1 overflow-y-auto p-4 pt-0 space-y-2">
+          <div className="space-y-2 mb-4">
+            <div 
+              className="flex items-center gap-3 p-2 rounded-md border transition-all cursor-pointer border-gray-200 bg-white hover:border-gray-300"
+              onClick={() => setActiveSectionId(null)}
             >
-              {sections.map((section) => (
-                <SortableItem key={section.id} section={section} />
-              ))}
-            </SortableContext>
-          </DndContext>
+              <div className="p-1 text-gray-500">
+                <Settings className="w-4 h-4" />
+              </div>
+              <span className="text-sm font-medium">全局设置</span>
+            </div>
+
+            <div 
+              className="flex items-center gap-3 p-2 rounded-md border transition-all cursor-pointer border-gray-200 bg-white hover:border-gray-300"
+              onClick={() => setActiveSectionId('profile')}
+            >
+              <div className="p-1 text-blue-500">
+                <User className="w-4 h-4" />
+              </div>
+              <span className="text-sm font-medium">基本信息</span>
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={handleDragEnd}
+            >
+              <SortableContext
+                items={sections.map((s) => s.id)}
+                strategy={verticalListSortingStrategy}
+              >
+                {sections.map((section) => (
+                  <SortableItem key={section.id} section={section} />
+                ))}
+              </SortableContext>
+            </DndContext>
+          </div>
         </div>
       </div>
 
-      <div className="p-4 flex-1 overflow-y-auto">
-        <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">添加模块</h3>
-        <div className="grid grid-cols-1 gap-2">
-          {SECTION_TEMPLATES.map((template) => (
-            <button
-              key={template.type}
-              onClick={() => addSection(template.type, template.title)}
-              className="flex items-center gap-3 p-2 text-sm text-gray-600 hover:bg-white hover:text-blue-600 hover:shadow-sm rounded-md transition-all text-left border border-transparent hover:border-gray-200"
-            >
-              <template.icon className="w-4 h-4" />
-              <span>{template.title}</span>
-            </button>
-          ))}
+      {/* Add Module Section */}
+      <div className="flex-1 flex flex-col min-h-0">
+        <div className="p-4 flex-shrink-0">
+          <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider">添加模块</h3>
+        </div>
+        <div className="flex-1 overflow-y-auto p-4 pt-0">
+          <div className="grid grid-cols-1 gap-2">
+            {SECTION_TEMPLATES.map((template) => (
+              <button
+                key={template.type}
+                onClick={() => addSection(template.type, template.title)}
+                className="flex items-center gap-3 p-2 text-sm text-gray-600 hover:bg-white hover:text-blue-600 hover:shadow-sm rounded-md transition-all text-left border border-transparent hover:border-gray-200"
+              >
+                <template.icon className="w-4 h-4" />
+                <span>{template.title}</span>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </aside>
