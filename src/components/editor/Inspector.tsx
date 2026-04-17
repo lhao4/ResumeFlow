@@ -606,6 +606,30 @@ export default function Inspector() {
                   />
                 </div>
               </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">个人信息横线水平偏移 (px): {style.profileDividerOffset}</label>
+                <input 
+                  type="range" 
+                  min="-200" 
+                  max="200"
+                  step="1"
+                  value={style.profileDividerOffset} 
+                  onChange={(e) => updateStyle({ profileDividerOffset: Number(e.target.value) })}
+                  className="w-full"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">个人信息横线垂直偏移 (px): {style.profileDividerOffsetY}</label>
+                <input 
+                  type="range" 
+                  min="-80" 
+                  max="80"
+                  step="1"
+                  value={style.profileDividerOffsetY} 
+                  onChange={(e) => updateStyle({ profileDividerOffsetY: Number(e.target.value) })}
+                  className="w-full"
+                />
+              </div>
             </div>
           </section>
 

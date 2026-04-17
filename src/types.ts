@@ -26,6 +26,8 @@ export type ResumeStyle = {
   dividerColor: string;
   dividerWidth: number; // percentage 0-100
   dividerHeight: number; // thickness in px
+  profileDividerOffset: number; // horizontal offset in px for the profile divider
+  profileDividerOffsetY: number; // vertical offset in px for the profile divider
   layout: 'single' | 'double';
   sidebarWidth: number; // percentage for double layout
   showPageNumbers: boolean;

@@ -107,6 +107,8 @@ const DEFAULT_DATA: ResumeData = {
     dividerColor: '#2563eb',
     dividerWidth: 100,
     dividerHeight: 1,
+    profileDividerOffset: 0,
+    profileDividerOffsetY: 0,
     layout: 'single',
     sidebarWidth: 30,
     showPageNumbers: true,
@@ -252,7 +254,7 @@ export const useResumeStore = create<ResumeState>()(
       }),
       {
         name: 'resume-storage',
-        version: 12,
+        version: 14,
         migrate: (persistedState: any, version: number) => {
           let state = persistedState;
 
@@ -399,6 +401,29 @@ export const useResumeStore = create<ResumeState>()(
                 profileNameFontSize: state.style?.profileNameFontSize ?? DEFAULT_DATA.style.profileNameFontSize,
                 profileRoleFontSize: state.style?.profileRoleFontSize ?? DEFAULT_DATA.style.profileRoleFontSize,
                 profileFieldFontSize: state.style?.profileFieldFontSize ?? DEFAULT_DATA.style.profileFieldFontSize,
+              }
+            };
+          }
+
+          if (version < 13) {
+            state = {
+              ...state,
+              style: {
+                ...DEFAULT_DATA.style,
+                ...state.style,
+                profileDividerOffset: state.style?.profileDividerOffset ?? DEFAULT_DATA.style.profileDividerOffset,
+              }
+            };
+          }
+
+          if (version < 14) {
+            state = {
+              ...state,
+              style: {
+                ...DEFAULT_DATA.style,
+                ...state.style,
+                profileDividerOffset: state.style?.profileDividerOffset ?? DEFAULT_DATA.style.profileDividerOffset,
+                profileDividerOffsetY: state.style?.profileDividerOffsetY ?? DEFAULT_DATA.style.profileDividerOffsetY,
               }
             };
           }

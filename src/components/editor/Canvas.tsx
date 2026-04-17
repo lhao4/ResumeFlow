@@ -156,7 +156,8 @@ export default function Canvas() {
                 backgroundColor: style.dividerColor,
                 height: `${style.dividerHeight}px`,
                 width: `${style.dividerWidth}%`,
-                marginTop: '2px'
+                marginTop: '2px',
+                transform: `translate(${style.profileDividerOffset}px, ${style.profileDividerOffsetY}px)`
               }} 
             />
           </header>
