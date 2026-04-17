@@ -469,6 +469,15 @@ export default function Inspector() {
                 />
               </div>
               <div>
+                <label className="block text-xs text-gray-500 mb-1">模块标题字号 (px)</label>
+                <input 
+                  type="number" 
+                  value={style.sectionTitleFontSize} 
+                  onChange={(e) => updateStyle({ sectionTitleFontSize: Number(e.target.value) })}
+                  className="w-full px-3 py-2 border rounded-md text-sm"
+                />
+              </div>
+              <div>
                 <label className="block text-xs text-gray-500 mb-1">主题颜色</label>
                 <div className="flex gap-2 flex-wrap">
                   {['#2563eb', '#1e293b', '#059669', '#dc2626', '#7c3aed', '#ea580c'].map(color => (

@@ -73,7 +73,7 @@ export default function Canvas() {
       }}
     >
       <div className="flex flex-col mb-2">
-        <h2 className="text-lg font-bold uppercase tracking-wide" style={{ color: style.themeColor }}>
+        <h2 className="font-bold uppercase tracking-wide" style={{ color: style.themeColor, fontSize: `${style.sectionTitleFontSize}px` }}>
           {section.title}
         </h2>
         <div 

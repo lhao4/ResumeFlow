@@ -97,6 +97,7 @@ const DEFAULT_DATA: ResumeData = {
     marginBottom: 40,
     marginLeft: 40,
     baseFontSize: 14,
+    sectionTitleFontSize: 18,
     lineHeight: 1.6,
     themeColor: '#2563eb',
     fontFamily: 'sans-serif',
@@ -248,7 +249,7 @@ export const useResumeStore = create<ResumeState>()(
       }),
       {
         name: 'resume-storage',
-        version: 10,
+        version: 11,
         migrate: (persistedState: any, version: number) => {
           let state = persistedState;
 
@@ -372,6 +373,17 @@ export const useResumeStore = create<ResumeState>()(
                 spacingBottom: section.spacingBottom ?? 10,
                 spacingLeft: section.spacingLeft ?? 0,
               })),
+            };
+          }
+
+          if (version < 11) {
+            state = {
+              ...state,
+              style: {
+                ...DEFAULT_DATA.style,
+                ...state.style,
+                sectionTitleFontSize: state.style?.sectionTitleFontSize ?? DEFAULT_DATA.style.sectionTitleFontSize,
+              }
             };
           }
 
