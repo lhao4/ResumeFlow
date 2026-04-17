@@ -17,6 +17,9 @@ export type ResumeStyle = {
   marginLeft: number;
   baseFontSize: number;
   sectionTitleFontSize: number;
+  profileNameFontSize: number;
+  profileRoleFontSize: number;
+  profileFieldFontSize: number;
   lineHeight: number;
   themeColor: string;
   fontFamily: string;

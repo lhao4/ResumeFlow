@@ -478,6 +478,33 @@ export default function Inspector() {
                 />
               </div>
               <div>
+                <label className="block text-xs text-gray-500 mb-1">姓名字号 (px)</label>
+                <input 
+                  type="number" 
+                  value={style.profileNameFontSize} 
+                  onChange={(e) => updateStyle({ profileNameFontSize: Number(e.target.value) })}
+                  className="w-full px-3 py-2 border rounded-md text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">职位字号 (px)</label>
+                <input 
+                  type="number" 
+                  value={style.profileRoleFontSize} 
+                  onChange={(e) => updateStyle({ profileRoleFontSize: Number(e.target.value) })}
+                  className="w-full px-3 py-2 border rounded-md text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs text-gray-500 mb-1">个人信息内容字号 (px)</label>
+                <input 
+                  type="number" 
+                  value={style.profileFieldFontSize} 
+                  onChange={(e) => updateStyle({ profileFieldFontSize: Number(e.target.value) })}
+                  className="w-full px-3 py-2 border rounded-md text-sm"
+                />
+              </div>
+              <div>
                 <label className="block text-xs text-gray-500 mb-1">主题颜色</label>
                 <div className="flex gap-2 flex-wrap">
                   {['#2563eb', '#1e293b', '#059669', '#dc2626', '#7c3aed', '#ea580c'].map(color => (

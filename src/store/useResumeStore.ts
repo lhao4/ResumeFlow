@@ -98,6 +98,9 @@ const DEFAULT_DATA: ResumeData = {
     marginLeft: 40,
     baseFontSize: 14,
     sectionTitleFontSize: 18,
+    profileNameFontSize: 30,
+    profileRoleFontSize: 18,
+    profileFieldFontSize: 14,
     lineHeight: 1.6,
     themeColor: '#2563eb',
     fontFamily: 'sans-serif',
@@ -249,7 +252,7 @@ export const useResumeStore = create<ResumeState>()(
       }),
       {
         name: 'resume-storage',
-        version: 11,
+        version: 12,
         migrate: (persistedState: any, version: number) => {
           let state = persistedState;
 
@@ -383,6 +386,19 @@ export const useResumeStore = create<ResumeState>()(
                 ...DEFAULT_DATA.style,
                 ...state.style,
                 sectionTitleFontSize: state.style?.sectionTitleFontSize ?? DEFAULT_DATA.style.sectionTitleFontSize,
+              }
+            };
+          }
+
+          if (version < 12) {
+            state = {
+              ...state,
+              style: {
+                ...DEFAULT_DATA.style,
+                ...state.style,
+                profileNameFontSize: state.style?.profileNameFontSize ?? DEFAULT_DATA.style.profileNameFontSize,
+                profileRoleFontSize: state.style?.profileRoleFontSize ?? DEFAULT_DATA.style.profileRoleFontSize,
+                profileFieldFontSize: state.style?.profileFieldFontSize ?? DEFAULT_DATA.style.profileFieldFontSize,
               }
             };
           }

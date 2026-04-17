@@ -100,12 +100,12 @@ export default function Canvas() {
           >
             <div className="flex justify-between items-start pb-6">
               <div className="flex-1">
-              <h1 className="text-3xl font-bold mb-2" style={{ color: style.themeColor }}>
+              <h1 className="font-bold mb-2" style={{ color: style.themeColor, fontSize: `${style.profileNameFontSize}px` }}>
                 {profile.name}
               </h1>
-              <p className="text-lg font-medium text-gray-600 mb-4">{profile.role}</p>
+              <p className="font-medium text-gray-600 mb-4" style={{ fontSize: `${style.profileRoleFontSize}px` }}>{profile.role}</p>
               
-              <div className="flex flex-wrap gap-x-4 gap-y-2 text-sm text-gray-500">
+              <div className="flex flex-wrap gap-x-4 gap-y-2 text-gray-500" style={{ fontSize: `${style.profileFieldFontSize}px` }}>
                 {(profile.fields || []).filter(f => f.visible).map((field) => {
                   const IconComponent = (Icons as any)[field.icon || ''] || null;
                   return (
@@ -209,18 +209,18 @@ export default function Canvas() {
               </div>
             )}
 
-            <h1 className="text-2xl font-bold mb-1" style={{ color: style.themeColor }}>
+            <h1 className="font-bold mb-1" style={{ color: style.themeColor, fontSize: `${style.profileNameFontSize}px` }}>
               {profile.name}
             </h1>
-            <p className="text-sm font-medium text-gray-600 mb-6">{profile.role}</p>
+            <p className="font-medium text-gray-600 mb-6" style={{ fontSize: `${style.profileRoleFontSize}px` }}>{profile.role}</p>
 
             <div className="space-y-3 mb-8">
               {(profile.fields || []).filter(f => f.visible).map((field) => {
                 const IconComponent = (Icons as any)[field.icon || ''] || null;
                 return (
                   <div key={field.id} className="flex flex-col gap-0.5">
-                    <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">{field.label}</span>
-                    <div className="flex items-center gap-2 text-xs text-gray-600">
+                    <span className="uppercase font-bold text-gray-400 tracking-wider" style={{ fontSize: `${Math.max(10, style.profileFieldFontSize - 2)}px` }}>{field.label}</span>
+                    <div className="flex items-center gap-2 text-gray-600" style={{ fontSize: `${style.profileFieldFontSize}px` }}>
                       {IconComponent && <IconComponent className="w-3 h-3" />}
                       <span className="break-all">{field.value}</span>
                     </div>
